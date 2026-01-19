@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ko">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LoL 전적 - Main</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+            margin: 24px;
+        }
+
+        .top {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 10px 12px;
+            cursor: pointer;
+        }
+
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 14px;
+            margin: 12px 0;
+        }
+
+        .muted {
+            color: #666;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        @media (min-width: 900px) {
+            .grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .match {
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .win {
+            border-left: 6px solid #2ecc71;
+        }
+
+        .lose {
+            border-left: 6px solid #e74c3c;
+        }
+
+        .mono {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 12px;
+        }
+
+        /* ...기존 스타일 유지... */
+        .match {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .match:hover {
+            background: #fafafa;
+        }
+
+        .extra {
+            margin-top: 10px;
+            padding: 10px;
+            border-top: 1px dashed #ddd;
+        }
+
+        .extraGrid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .kv {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .match {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .match:hover {
+            background: #fafafa;
+        }
+        .champIcon{
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid #e5e5e5;
+        }
+        .titleRow{
+            display:flex;
+            align-items:center;
+            gap:10px;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="top">
+        <h1 style="margin:0;">Main (ASIA)</h1>
+        <button id="back">검색으로</button>
+        <span id="status" class="muted">준비됨</span>
+    </div>
+
+    <div class="card">
+        <div><b>Riot ID</b>: <span id="riotId">-</span></div>
+        <div><b>조회 시각</b>: <span id="createdAt">-</span></div>
+    </div>
+
+    <div class="card">
+        <h3 style="margin-top:0;">요약</h3>
+        <div id="summary" class="muted">로딩 중...</div>
+    </div>
+
+    <div class="card">
+        <h3 style="margin-top:0;">최근 매치</h3>
+        <div id="matches" class="grid"></div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+
+</html>

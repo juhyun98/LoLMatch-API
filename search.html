@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LoL 전적 검색 - Search</title>
+<style>
+    body { 
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; 
+      margin: 24px;
+      background-color: #10131c;
+    }
+
+    .row { 
+      width: 100%;
+    height: 40px;
+    margin-top: 24px;
+    display: flex;
+    justify-content: center;
+    }
+
+    input { 
+      padding: 10px; 
+      height: 44px;
+      width: 280px;
+      font-size: 16px;
+      border: 1px solid black;
+      border-top-left-radius: 8px;
+      border-bottom-left-radius: 8px;
+       box-sizing: border-box;
+    }
+    button { 
+      padding: 10px; 
+      height: 44px;
+      width: 60px;
+      border: 1px solid black;
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+      cursor: pointer;
+      background-color: #4f8cff;
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+       box-sizing: border-box; 
+    }
+    button { 
+      cursor: pointer; 
+      width:auto; 
+    }
+    pre {
+        display: none;
+        background:#111; 
+        color:#eee; 
+        padding: 12px; 
+        border-radius: 10px; 
+        overflow:auto; 
+      }
+    .hint {
+       color:#666; 
+       font-size: 13px; 
+       margin-top: 10px;
+       display: flex;
+       justify-content: center; 
+      }
+
+    .title {
+      color: #4f8cff;
+      font-size: 48px;
+      font-weight: 800;
+      display: flex;
+      justify-content: center;
+      margin-bottom: 0;
+    }
+
+    .info {
+      color: white;
+      display: flex;
+      justify-content: center;
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <p class="title">AGENT.GG</p>
+  <p class="info">소환사님의 전적을 검색하고 분석해드립니다.</p>
+  <form id="form">
+    <div class="row">
+      <input id="riotId" placeholder="예) Hide on bush#KR1" />
+      <button type="submit">검색</button>
+    </div>
+    <div class="hint">ID#tag를 입력하세요.(공백 가능)</div>
+
+  </form>
+
+  <script src="js/search.js"></script>
+</body>
+</html>
