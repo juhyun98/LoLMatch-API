@@ -1,14 +1,17 @@
 <!doctype html>
 <html lang="ko">
-
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>LoL 전적 - Main</title>
+    <!-- <link rel="stylesheet" href="./css/style.css"> -->
     <style>
         body {
             font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
             margin: 24px;
+            background-color: #10131c;
+            color: white;
+            
         }
 
         .top {
@@ -19,8 +22,17 @@
         }
 
         button {
-            padding: 10px 12px;
+            padding-left: 0px;
+            padding-right: 12px;
             cursor: pointer;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 18vw;
+            max-width: 180px;
+            font-weight: 700;
+            font-size: 18px;
         }
 
         .card {
@@ -54,10 +66,12 @@
 
         .win {
             border-left: 6px solid #2ecc71;
+            background-color: #28344e;
         }
 
         .lose {
             border-left: 6px solid #e74c3c;
+            background-color:  #59343b;
         }
 
         .mono {
@@ -113,32 +127,207 @@
             align-items:center;
             gap:10px;
         }
+        .container {
+            max-width: 80%;
+        }
+        .aside {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        img {
+            width: 50px;
+        }
 
+        .test {
+            display: flex;
+            width: 200px;
+        }
+
+        #iron {
+            background-color: #938681;
+        }
+
+        #bronze {
+            background-color: #61423a;
+        }
+
+        #silver {
+            background-color: #a9b8c2;
+        }
+
+        #gold {
+            background-color:  #c4b354;
+        }
+
+        #platinum {
+            background-color: #42c2a2;
+        }
+
+        #emerald {
+            background-color: #46cd83;
+        }
+
+        #diamond {
+            background-color: #4fa5dc;
+        }
+
+        #master {
+            background-color: #b73bc2;
+        }
+
+        #grandmaster {
+            background-color: #d0543f;
+        }
+
+        #challenger {
+            background-color: #94f4fd;
+        }
+        .chartWrap{
+            height: 340px;
+            margin-top: 12px;
+        }
+        .chartsGrid{
+        display: grid;
+        grid-template-columns: 1fr; /* ✅ 항상 1열 */
+        gap: 14px;
+        margin-top: 12px;
+        }
+
+        .chartItem{
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .chartLabel{
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .chartWrap{
+            height: 220px;
+        }
+        /* 차트 캔버스 포커스 테두리 제거 */
+        canvas:focus {
+            outline: none !important;
+        }
+
+        /* 차트 섹션/아이템에도 포커스 테두리 제거 (혹시 생기는 경우 대비) */
+        #chartSection:focus,
+        #chartSection:focus-within,
+        .chartItem:focus-within {
+            outline: none !important;
+        }
     </style>
 </head>
-
 <body>
-    <div class="top">
-        <h1 style="margin:0;">Main (ASIA)</h1>
-        <button id="back">검색으로</button>
-        <span id="status" class="muted">준비됨</span>
+    <div class="container">
+        <div class="top">
+            <h1 style="margin:0;">Main (ASIA)</h1>
+            <button id="back">검색으로</button>
+            <span id="status" class="muted">준비됨</span>
+        </div>
+
+        <div class="card">
+            <div><b>Riot ID</b>: <span id="riotId">-</span></div>
+            <div><b>조회 시각</b>: <span id="createdAt">-</span></div>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-top:0;">요약</h3>
+            <div id="summary" class="muted">로딩 중...</div>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-top:0;">최근 매치</h3>
+            <div id="matches" class="grid"></div>
+            <section id="chartSection" class="card" style="display:none;">
+            <h3>선택한 경기 그래프</h3>
+            <div id="chartTitle" class="muted">경기를 클릭하면 아래 차트가 표시됩니다.</div>
+
+            <div class="chartsGrid">
+                <div class="chartItem">
+                <div class="chartLabel">10분 전 라인 미니언</div>
+                <div class="chartWrap"><canvas id="c_cs10"></canvas></div>
+                </div>
+
+                <div class="chartItem">
+                <div class="chartLabel">10분 전 적 처치관여 횟수</div>
+                <div class="chartWrap"><canvas id="c_takedowns"></canvas></div>
+                </div>
+
+                <div class="chartItem">
+                <div class="chartLabel">DPM / GPM</div>
+                <div class="chartWrap"><canvas id="c_dpm"></canvas></div>
+                </div>
+
+                <div class="chartItem">
+                <div class="chartLabel">VPM(분당 시야점수)</div>
+                <div class="chartWrap"><canvas id="c_vpm"></canvas></div>
+                </div>
+
+                <div class="chartItem">
+                <div class="chartLabel">핑찍은 횟수</div>
+                <div class="chartWrap"><canvas id="c_pings"></canvas></div>
+                </div>
+            </div>
+            </section>
+
+        </div>
     </div>
 
-    <div class="card">
-        <div><b>Riot ID</b>: <span id="riotId">-</span></div>
-        <div><b>조회 시각</b>: <span id="createdAt">-</span></div>
-    </div>
+    <div class="aside">
+            
+                
+            <button id="iron"> 
+                <img src="https://i.namu.wiki/i/idqrOdOF4HRncFvZZFKPj6ZpWRDDofvzTJ2qxOGHCgpLVk8l3SvhMFVv3bE4d6ewPISqb7GWWWBHsaErb7CKzCKMwOHVV0nrTSHR6COs-A0PA-_LQYMDYh5Si8mlINeRAwBHU4uw_oRp_-tn-sD3QA.webp" alt="">
+                아이언</button>
 
-    <div class="card">
-        <h3 style="margin-top:0;">요약</h3>
-        <div id="summary" class="muted">로딩 중...</div>
-    </div>
+            <button id="bronze">
+                <img src="https://i.namu.wiki/i/rlgYdEOjfAUU0FG31GRaSccilWA9m8QTvNcXpx2hvrrHuxstLeaO3KHIw_zyRgBXlZC2XBBPo50daz63X7ATnmOlsIXEfqdoihwtZgV_FpSSx7xrRf3kajgimLGGCubi187H_OnmeBc80qEDJ8G2AA.webp" alt="">
+                브론즈</button>
+       
+            <button id="silver">
+                <img src="https://i.namu.wiki/i/fp2iX76DigUmgNFEeqzUegWC2FtOB7JALM8eWeHlC0OAqfdpc-OyeNUIyRMSnl8BAZLmTPgn78qEeOs3sZhK8eEGSepisc7y_H-9VOQEC_uf2BKYYQleGTi69zz0Ev4jqzDkrPf5PNmAs2i84y-lOA.webp" alt="">
+                실버</button>
+       
+            <button id="gold">
+                <img src="https://i.namu.wiki/i/yq5jeR89DkJozjfM_XpUFTLLu54bQanQg8ODB4niIQP5HT9p_9NSrbB5qHbMXbJVHCoO1NuDKfroT6zZ-CYJ36Vb04nk3opalrwPX16nVhdEmCsVIs1jymi1AK2O1m5dKeijZLGLFFsD6RQ_q7LBGw.webp" alt="">
+                골드</button>
+        
+            <button id="platinum">
+                <img src="https://i.namu.wiki/i/ZWNBRH1i2hVvy1r9FUCkVzaQxo2TFbfYn_ZLGCNfQOoNWU7kSAYPgtkosxHei-dvSL2Fu11_h3Gdr1v1pDpY1Xo35wORa9o3SlL_Fy5kHPZqBUxJ83KEiXyyd7mEJYPA1XFn5mZaYorMz5sYAMsucw.webp" alt="">
+                플래티넘</button>
+        
+            <button id="emerald">
+                <img src="https://i.namu.wiki/i/8jpWtJdrlrTkgElWGiwAvUEL2lEpzrWnlwuacwP76g6HdG6R5YchhwFcIr-QsYQSU1_qdxWq1EWSeHTePGX7N6UKUVBYS5eQh6kJO1WIHirhR89WZc-SLQMscO0LaK-BWurduJSBKku00QDPIvu1xA.webp" alt="">
+                에메랄드</button>
+        
+            <button id="diamond">
+                <img src="https://i.namu.wiki/i/gOTzT8fXK5RHyBgyxGtSZsim5b5DDK_5OD1zeRWnve0pbV-4syrCJ8RG5zoaYhQMWRfgmxMBaXO37jQ6VjnY6ETISAnzErE35SVjjXI6zqZaX_pEUGpuxwmzUC4XaWf7kohF7DC98qdcGWqSuVQ4dA.webp" alt="">
+                다이아몬드</button>
+        
+            <button id="master">
+                <img src="https://i.namu.wiki/i/a1j4wahXrU7vvqe7DWVji57AIMQH0jjqJ6gTDVrOvB9C85WTTN6llAKbBEIGygWeKcs-Ph4Ef8BhntIurHFQdZA7TIbY9GivjLSB7v2hbLnH1nuZy9Gz9I7JKZX5K7scuNfRXVAAVQhYb3bZP2FOcA.webp" alt="">
+                마스터</button>
 
-    <div class="card">
-        <h3 style="margin-top:0;">최근 매치</h3>
-        <div id="matches" class="grid"></div>
+            <button id="grandmaster">
+                <img src="https://i.namu.wiki/i/bh6Eg8gcIK64T-XF1noLdO2fJxvAya9XtlOiScN0aTp2L4AeEL5jfWAmt8nTLc7rU9mYUjImWE60adHdAl6vmfHhTv7QRIP1W66Slwr41dc2HJgFu4ocl7ZkbXXC3zbLQCd3tdRLE1qq6a5j2Jk16w.webp" alt="">
+                그랜드마스터</button>
+            
+            <button id="challenger">
+                <img src="https://i.namu.wiki/i/Xx3hzdi-B_szrzMlQ-lOK05FwIxs0j7OARWeuby8063dvISn8PlXOe7JBqx_mBH_y_XjPDLNmt1gvABV2tP-WwYyIsLUZzzSNTJb_3XI_9R1wV6T1mAFMapIfEzYwdP3AaMgTo7xNgbhBZkP-mSwXQ.webp" alt="">
+                챌린저</button>
+        
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@latest/dist/chart.umd.min.js"></script>
     <script src="js/main.js"></script>
 </body>
 

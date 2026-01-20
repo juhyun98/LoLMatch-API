@@ -1,4 +1,4 @@
-// ✅ Riot API Key (개발용 / 노출되면 재발급 권장)
+// ✅ Riot API Key (노출되면 재발급 권장)
 const RIOT_API_KEY = "";
 
 // ✅ ASIA 고정
@@ -6,22 +6,19 @@ const REGION = "asia";
 const STORAGE_KEY = "riotSearchPayload";
 
 // ===== Data Dragon (Champion square icons) =====
-let DD_VERSION = null;                  // 예: "16.1.1"
-let CHAMP_IMG_BY_KEY = new Map();       // championId(숫자) -> "Aatrox.png"
+let DD_VERSION = null;
+let CHAMP_IMG_BY_KEY = new Map(); // championId(숫자) -> "Aatrox.png"
 
 async function loadDataDragonChampionMap() {
-  if (DD_VERSION && CHAMP_IMG_BY_KEY.size) return; // 이미 로드됨
+  if (DD_VERSION && CHAMP_IMG_BY_KEY.size) return;
 
-  // 1) 최신 버전 가져오기
   const versions = await fetch("https://ddragon.leagueoflegends.com/api/versions.json")
-    .then(r => r.json());
+    .then((r) => r.json());
   DD_VERSION = versions[0];
 
-  // 2) 챔피언 목록(이미지 파일명 포함) 가져오기
   const champJsonUrl = `https://ddragon.leagueoflegends.com/cdn/${DD_VERSION}/data/en_US/champion.json`;
-  const champJson = await fetch(champJsonUrl).then(r => r.json());
+  const champJson = await fetch(champJsonUrl).then((r) => r.json());
 
-  // champJson.data = { Aatrox: { key:"266", image:{ full:"Aatrox.png" }, ... }, ... }
   for (const champName in champJson.data) {
     const c = champJson.data[champName];
     if (c?.key && c?.image?.full) {
@@ -36,11 +33,10 @@ function getChampionSquareUrlByChampionId(championId) {
   return `https://ddragon.leagueoflegends.com/cdn/${DD_VERSION}/img/champion/${file}`;
 }
 
-
 const $ = (id) => document.getElementById(id);
 
 let matchMap = new Map();   // matchId -> matchJson
-let currentPuuid = null;    // 클릭 시 사용
+let currentPuuid = null;    // 내 puuid
 
 function baseUrl() {
   return `https://${REGION}.api.riotgames.com`;
@@ -52,6 +48,10 @@ function setStatus(msg) {
 }
 
 async function riotFetchJson(url) {
+  if (!RIOT_API_KEY || !RIOT_API_KEY.startsWith("RGAPI-")) {
+    throw { status: 0, statusText: "API Key Missing", data: { message: "RIOT_API_KEY를 설정하세요." } };
+  }
+
   const res = await fetch(url, {
     method: "GET",
     headers: { "X-Riot-Token": RIOT_API_KEY },
@@ -149,17 +149,17 @@ function renderMatchCard(matchJson, puuid, matchId) {
 
   const div = document.createElement("div");
   div.className = "match " + (me?.win ? "win" : "lose");
-  div.dataset.matchId = matchId; // ✅ 클릭 시 matchId로 찾기
+  div.dataset.matchId = matchId;
 
   if (!me) {
     div.innerHTML = `
       <div><b>${matchId}</b></div>
       <div class="muted">내 참가자 정보를 찾지 못했습니다.</div>
-      <div class="extra" data-loaded="0" style="display:none;"></div>
+      <div class="extra" style="display:none;"></div>
     `;
     return div;
   }
-  
+
   const champIconUrl = getChampionSquareUrlByChampionId(me.championId);
   const champ = me.championName ?? `ChampionId:${me.championId ?? "?"}`;
   const kdaText = `${me.kills}/${me.deaths}/${me.assists}`;
@@ -178,8 +178,7 @@ function renderMatchCard(matchJson, puuid, matchId) {
     </div>
     <div class="muted" style="margin-top:6px;">${when}</div>
 
-    <!-- ✅ 클릭 시 여기 아래에 스탯이 펼쳐짐 -->
-    <div class="extra" data-loaded="0" style="display:none;"></div>
+    <div class="extra" style="display:none;"></div>
   `;
 
   return div;
@@ -194,75 +193,65 @@ function loadPayloadOrRedirect() {
   return JSON.parse(raw);
 }
 
-/* ===== 클릭 시 펼쳐서 보여줄 스탯 ===== */
-
-function formatNumber(n, digits = 2) {
+function formatNumber(n, digits = 1) {
   if (n === null || n === undefined || Number.isNaN(n)) return "-";
   return Number(n).toFixed(digits);
 }
 
-function formatPercent(p) {
-  if (p === null || p === undefined || Number.isNaN(p)) return "-";
-  const v = Number(p);
-  const percent = v <= 1 ? v * 100 : v;
-  return `${percent.toFixed(1)}%`;
-}
-
 function getTotalPingsFromMatch(matchJson, puuid) {
   const me = pickMe(matchJson, puuid);
-  if (!me) return { totalPings: 0, pingBreakdown: {} };
+  if (!me) return { totalPings: 0 };
 
-  // ParticipantDto에 있는 "*Pings" 필드를 전부 합산
-  const pingKeys = Object.keys(me).filter(
-    (k) => k.endsWith("Pings") && Number.isFinite(me[k])
-  );
-
-  const pingBreakdown = {};
+  const pingKeys = Object.keys(me).filter((k) => k.endsWith("Pings") && Number.isFinite(me[k]));
   let total = 0;
-
-  for (const k of pingKeys) {
-    const v = Number(me[k]) || 0;
-    pingBreakdown[k] = v;
-    total += v;
-  }
-
-  return { totalPings: total, pingBreakdown };
+  for (const k of pingKeys) total += Number(me[k]) || 0;
+  return { totalPings: total };
 }
 
+/**
+ * ✅ 이제 필요한 5개 지표만 추출
+ * - CS@10(라인/정글)
+ * - takedownsFirstXMinutes
+ * - damagePerMinute(DPM)
+ * - visionScorePerMinute(VPM)
+ * - totalPings
+ */
 function extractSelectedStats(matchJson, puuid) {
   const me = pickMe(matchJson, puuid);
   if (!me) return null;
 
-  const totalDamageTaken = me.totalDamageTaken;
-  const { totalPings, pingBreakdown } = getTotalPingsFromMatch(matchJson, puuid);
-
+  const position = me.teamPosition || me.individualPosition || me.lane || "UNKNOWN";
   const ch = me.challenges || {};
-  const goldEarned = me.goldEarned;
-  const goldSpent = me.goldSpent;
 
   const laneMinionsFirst10Minutes =
     ch.laneMinionsFirst10Minutes ?? me.laneMinionsFirst10Minutes ?? null;
 
-  const damageTakenOnTeamPercentage =
-    ch.damageTakenOnTeamPercentage ?? me.damageTakenOnTeamPercentage ?? null;
+  const jungleCsBefore10Minutes =
+    ch.jungleCsBefore10Minutes ?? me.jungleCsBefore10Minutes ?? null;
+
+  const takedownsFirstXMinutes =
+    ch.takedownsFirstXMinutes ?? me.takedownsFirstXMinutes ?? null;
+
+  const visionScorePerMinute =
+    ch.visionScorePerMinute ?? me.visionScorePerMinute ?? null;
 
   const damagePerMinute =
     ch.damagePerMinute ?? me.damagePerMinute ?? null;
 
-  const kda =
-    me.kda ?? ch.kda ??
-    ((Number(me.kills ?? 0) + Number(me.assists ?? 0)) / Math.max(1, Number(me.deaths ?? 0)));
+  const goldPerMinute =
+    ch.goldPerMinute ?? me.goldPerMinute ?? null;
+
+  const { totalPings } = getTotalPingsFromMatch(matchJson, puuid);
 
   return {
-    goldEarned,
-    goldSpent,
+    position,
     laneMinionsFirst10Minutes,
-    damageTakenOnTeamPercentage,
-    kda,
+    jungleCsBefore10Minutes,
+    takedownsFirstXMinutes,
+    visionScorePerMinute,
     damagePerMinute,
-    totalDamageTaken,
+    goldPerMinute,
     totalPings,
-    pingBreakdown
   };
 }
 
@@ -272,34 +261,100 @@ function renderExtraStats(extraEl, stats) {
     return;
   }
 
+  const isJungle = stats.position === "JUNGLE";
+  const csRow = isJungle
+    ? `<div class="kv"><b>첫 10분 정글 몬스터 처치 CS</b><span>${formatNumber(stats.jungleCsBefore10Minutes, 1)}</span></div>`
+    : `<div class="kv"><b>첫 10분 미니언 CS</b><span>${formatNumber(stats.laneMinionsFirst10Minutes, 1)}</span></div>`;
+
   extraEl.innerHTML = `
     <div class="extraGrid">
-      <div class="kv"><b>goldEarned</b><span>${stats.goldEarned ?? "-"}</span></div>
-      <div class="kv"><b>goldSpent</b><span>${stats.goldSpent ?? "-"}</span></div>
-
-      <div class="kv"><b>laneMinionsFirst10Minutes</b><span>${formatNumber(stats.laneMinionsFirst10Minutes, 1)}</span></div>
-      <div class="kv"><b>damageTakenOnTeamPercentage</b><span>${formatPercent(stats.damageTakenOnTeamPercentage)}</span></div>
-
-      <div class="kv"><b>kda</b><span>${formatNumber(stats.kda, 2)}</span></div>
-      <div class="kv"><b>damagePerMinute</b><span>${formatNumber(stats.damagePerMinute, 1)}</span></div>
-      <div class="kv"><b>totalDamageTaken</b><span>${formatNumber(stats.totalDamageTaken, 1)}</span></div>
-      <div class="kv"><b>totalPings</b><span>${stats.totalPings ?? "-"}</span></div>
+      <div class="kv"><b>10분 전 적 처치관여 횟수</b><span>${formatNumber(stats.takedownsFirstXMinutes, 1)}</span></div>
+      <div class="kv"><b>DMG / GOLD</b><span>${(formatNumber(stats.damagePerMinute, 1) / formatNumber(stats.goldPerMinute, 1)).toFixed(2)}</span></div>
+      
+      <div class="kv"><b>VPM(분당 시야점수)</b><span>${formatNumber(stats.visionScorePerMinute, 1)}</span></div>
+      ${csRow}
+      <div class="kv"><b>핑 횟수</b><span>${stats.totalPings ?? "-"}</span></div>
     </div>
   `;
 }
 
-/* ===== 메인 로직 ===== */
+
+// ===== 5개 Bar Chart =====
+let charts = {};
+let chartsInitialized = false;
+
+function createSingleBarChart(canvasId, labelText) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return null;
+
+  const ctx = canvas.getContext("2d");
+  return new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: [labelText],               // ✅ 라벨 1개
+      datasets: [{
+        label: labelText,
+        data: [0],                       // ✅ 값 1개 = 막대 1개
+        barThickness: 50,                // ✅ 막대 두께 (원하면 조절)
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true }
+      },
+    },
+  });
+}
+
+function initMetricCharts() {
+  charts.cs10 = createSingleBarChart("c_cs10", "CS @ 10");
+  charts.takedowns = createSingleBarChart("c_takedowns", "takedownsFirstXMinutes");
+  charts.dpm = createSingleBarChart("c_dpm", "DPM / GPM");
+  charts.vpm = createSingleBarChart("c_vpm", "visionScorePerMinute");
+  charts.pings = createSingleBarChart("c_pings", "Pings");
+}
+
+function setChartValue(chart, value) {
+  if (!chart) return;
+  chart.data.datasets[0].data = [Number(value ?? 0)];
+  chart.update();
+}
+
+function updateMetricCharts(matchJson, stats) {
+  // ✅ 정글이면 정글CS, 아니면 라인CS
+  const isJungle = stats.position === "JUNGLE";
+  const cs10 = isJungle ? stats.jungleCsBefore10Minutes : stats.laneMinionsFirst10Minutes;
+
+  // cs 차트 라벨도 정글/라인에 맞게 바꾸고 싶으면:
+  if (charts.cs10) {
+    charts.cs10.data.labels = [isJungle ? "Jungle CS @ 10" : "Lane CS @ 10"];
+    charts.cs10.data.datasets[0].label = charts.cs10.data.labels[0];
+  }
+
+  setChartValue(charts.cs10, cs10);
+  setChartValue(charts.takedowns, stats.takedownsFirstXMinutes);
+  setChartValue(charts.dpm, stats.damagePerMinute / stats.goldPerMinute);
+  setChartValue(charts.vpm, stats.visionScorePerMinute);
+  setChartValue(charts.pings, stats.totalPings);
+
+  // 제목 갱신
+  const me = pickMe(matchJson, currentPuuid);
+  const champ = me?.championName ?? "Unknown";
+  const when = matchJson?.info?.gameEndTimestamp ? formatDate(matchJson.info.gameEndTimestamp) : "-";
+  const result = me?.win ? "WIN" : "LOSE";
+  const titleEl = document.getElementById("chartTitle");
+  if (titleEl) titleEl.textContent = `${result} · ${champ} · ${when}`;
+}
+
+
+// ===== 메인 로직 =====
 
 async function init() {
   const payload = loadPayloadOrRedirect();
   if (!payload) return;
-
-  if (!RIOT_API_KEY || !RIOT_API_KEY.startsWith("RGAPI-")) {
-    setStatus("API Key 설정 필요");
-    const s = $("summary");
-    if (s) s.textContent = "main.js 상단 RIOT_API_KEY를 설정해 주세요.";
-    return;
-  }
 
   $("riotId").textContent = payload.riotId ?? "-";
   $("createdAt").textContent = payload.createdAt ?? "-";
@@ -313,14 +368,18 @@ async function init() {
     return;
   }
 
+  // 차트 영역은 처음엔 숨김(원하면 main.html에서 display:none으로 해도 됨)
+  const chartSection = document.getElementById("chartSection");
+  if (chartSection) chartSection.style.display = "none";
+
   try {
     setStatus("매치 상세 로딩 중...");
 
-    // ✅ 여기서는 그냥 상세만 받아온다
     const details = await mapWithConcurrency(matchIds, 3, (matchId) => getMatchDetail(matchId));
-    await loadDataDragonChampionMap();
 
-    // ✅ 받은 뒤에 matchId -> matchJson 맵을 만든다 (중요!)
+    // 아이콘 로딩 실패해도 매치 출력은 되게
+    try { await loadDataDragonChampionMap(); } catch {}
+
     matchMap = new Map();
     details.forEach((m, idx) => matchMap.set(matchIds[idx], m));
 
@@ -339,30 +398,56 @@ async function init() {
 
     container.appendChild(frag);
 
-    // ✅ 클릭 이벤트는 렌더링 후 1번만 붙이면 됨
-// ✅ 클릭 시: 한 번에 한 경기만 펼치기
-    container.addEventListener("click", (e) => {
-      const card = e.target.closest(".match");
-      if (!card) return;
+    // ✅ 클릭: 한 번에 한 경기만 펼치기 + 차트(5개 지표) 표시/업데이트 + 스크롤
+container.addEventListener("click", (e) => {
+  const card = e.target.closest(".match");
+  if (!card) return;
 
-      const matchId = card.dataset.matchId;
-      const extra = card.querySelector(".extra");
-      if (!extra) return;
+  const matchId = card.dataset.matchId;
+  const extra = card.querySelector(".extra");
+  if (!extra) return;
 
-      // 토글
-      const willOpen = extra.style.display !== "block";
-      extra.style.display = willOpen ? "block" : "none";
+  const isAlreadyOpen = extra.style.display === "block";
 
-      // 열 때만, 아직 안 채웠으면 채우기
-      if (willOpen && extra.dataset.loaded !== "1") {
-        const matchJson = matchMap.get(matchId);
-        const stats = extractSelectedStats(matchJson, currentPuuid);
-        renderExtraStats(extra, stats);
-        extra.dataset.loaded = "1";
-      }
-    });
+  // 1) 기존 열린 extra 닫기
+  container.querySelectorAll(".extra").forEach((el) => (el.style.display = "none"));
 
+  // 2) 같은 경기 다시 클릭하면 차트 숨기고 종료
+  if (isAlreadyOpen) {
+    if (chartSection) chartSection.style.display = "none";
+    return;
+  }
 
+  // 3) 클릭한 것만 열기
+  extra.style.display = "block";
+
+  const matchJson = matchMap.get(matchId);
+  const stats = extractSelectedStats(matchJson, currentPuuid);
+
+  // stats 없으면 차트도 숨김
+  if (!stats) {
+    renderExtraStats(extra, null);
+    if (chartSection) chartSection.style.display = "none";
+    return;
+  }
+
+  renderExtraStats(extra, stats);
+
+  // 4) 차트 섹션 보여주기
+  if (chartSection) chartSection.style.display = "block";
+
+  // ✅ 5) 5개 차트는 최초 1회만 생성 (중요)
+  if (!chartsInitialized) {
+    initMetricCharts();
+    chartsInitialized = true;
+  }
+
+  // ✅ 6) 5개 차트 업데이트
+  updateMetricCharts(matchJson, stats);
+
+  // 7) 스크롤 이동
+  chartSection?.scrollIntoView({ behavior: "smooth", block: "start" });
+});
 
     setStatus("완료");
   } catch (err) {

@@ -60,6 +60,18 @@ async function getMatchIdsByPuuid(puuid, start = 0, count = 10) {
   return riotFetchJson(url);
 }
 
+
+const RANKED_SOLO_QUEUE = 420; // 솔랭만
+
+async function getMatchIdsByPuuid(puuid, start = 0, count = 10, queue = RANKED_SOLO_QUEUE) {
+  const qs = new URLSearchParams({ start: String(start), count: String(count) });
+  if (queue != null) qs.set("queue", String(queue)); // ✅ queue=420
+
+  const url = `${baseUrl()}/lol/match/v5/matches/by-puuid/${encodeURIComponent(puuid)}/ids?${qs}`;
+  return riotFetchJson(url);
+}
+
+
 $("form").addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -68,7 +80,7 @@ $("form").addEventListener("submit", async (e) => {
 
   if (!parsed) {
     console.log("Riot ID를 gameName#tagLine 형식으로 입력해 주세요. 예) Hide on bush#KR1");
-    alert("Riot ID를 gameName#tagLine 형식으로 입력해 주세요. \n예) Hide on bush#KR1");
+    alert("Riot ID를 gameName#tag 형식으로 입력해 주세요. \n예) Hide on bush#KR1");
     return;
   }
 
@@ -93,6 +105,7 @@ $("form").addEventListener("submit", async (e) => {
     window.location.assign("./main.html");
   } catch (err) {
     console.log({ error: "검색 실패", ...err });
+    alert("Riot ID를 gameName#tag 형식으로 입력해 주세요. \n예) Hide on bush#KR1");
   }
 });
 
