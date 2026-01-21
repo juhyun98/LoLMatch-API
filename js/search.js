@@ -1,5 +1,5 @@
 // ✅ 여기에 Riot API Key 넣기 (개발용 / 배포 금지)
-const RIOT_API_KEY = "";
+const RIOT_API_KEY = "Riot API 입력";
 
 // ✅ ASIA 고정
 const REGION = "asia";

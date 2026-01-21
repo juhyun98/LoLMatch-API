@@ -1,9 +1,46 @@
 // ✅ Riot API Key (노출되면 재발급 권장)
-const RIOT_API_KEY = "";
+const RIOT_API_KEY = "Riot API 입력";
 
 // ✅ ASIA 고정
 const REGION = "asia";
 const STORAGE_KEY = "riotSearchPayload";
+
+const TIER_BASELINES = {
+  IRON: { cs10: 52.15, takedowns: 3.65, DPMGPM: 1.78, vpm: 0.62, pings: 26.24 },
+  BRONZE: { cs10: 61.30, takedowns: 3.72, DPMGPM: 1.81, vpm: 0.74, pings: 22.06 },
+  SILVER: { cs10: 61.30, takedowns: 3.72, DPMGPM: 1.81, vpm: 0.74, pings: 22.06 },
+  GOLD: { cs10: 61.30, takedowns: 3.72, DPMGPM: 1.81, vpm: 0.74, pings: 22.06 },
+  PLATIINUM: { cs10: 61.30, takedowns: 3.72, DPMGPM: 1.81, vpm: 0.74, pings: 22.06 },
+  EMERALD: { cs10: 61.30, takedowns: 3.72, DPMGPM: 1.81, vpm: 0.74, pings: 22.06 },
+  DIAMOND: { cs10: 61.30, takedowns: 3.72, DPMGPM: 1.81, vpm: 0.74, pings: 22.06 },
+  MASTER: { cs10: 61.30, takedowns: 3.72, DPMGPM: 1.81, vpm: 0.74, pings: 22.06 },
+  GRANDMASTER: { cs10: 61.30, takedowns: 3.72, DPMGPM: 1.81, vpm: 0.74, pings: 22.06 },
+  CHALLENGER: { cs10: 61.30, takedowns: 3.72, DPMGPM: 1.81, vpm: 0.74, pings: 22.06 },
+};
+
+const TIER_COLORS = {
+  IRON:   "#938681",
+  BRONZE: "#61423a",
+  SILVER: "#a9b8c2",
+  GOLD:   "#c4b354",
+  PLATIINUM: "#42c2a2",
+  EMERALD: "#46cd83",
+  DIAMOND: "#4fa5dc",
+  MASTER: "#b73bc2",
+  GRANDMASTER: "#d0543f",
+  CHALLENGER: "#94f4fd"
+};
+
+function getBaselineColor(tier) {
+  return TIER_COLORS[tier] ?? "rgba(255,255,255,0.6)";
+}
+
+let selectedBaselineName = null; // "IRON" | "SILVER" | ...
+
+
+let selectedBaseline = null; // { name: "IRON", values: Iron } 또는 null
+let lastSelectedMatchJson = null;
+let lastSelectedStats = null;
 
 // ===== Data Dragon (Champion square icons) =====
 let DD_VERSION = null;
@@ -268,11 +305,11 @@ function renderExtraStats(extraEl, stats) {
 
   extraEl.innerHTML = `
     <div class="extraGrid">
+    ${csRow}
       <div class="kv"><b>10분 전 적 처치관여 횟수</b><span>${formatNumber(stats.takedownsFirstXMinutes, 1)}</span></div>
       <div class="kv"><b>DMG / GOLD</b><span>${(formatNumber(stats.damagePerMinute, 1) / formatNumber(stats.goldPerMinute, 1)).toFixed(2)}</span></div>
       
       <div class="kv"><b>VPM(분당 시야점수)</b><span>${formatNumber(stats.visionScorePerMinute, 1)}</span></div>
-      ${csRow}
       <div class="kv"><b>핑 횟수</b><span>${stats.totalPings ?? "-"}</span></div>
     </div>
   `;
@@ -291,54 +328,132 @@ function createSingleBarChart(canvasId, labelText) {
   return new Chart(ctx, {
     type: "bar",
     data: {
-      labels: [labelText],               // ✅ 라벨 1개
-      datasets: [{
-        label: labelText,
-        data: [0],                       // ✅ 값 1개 = 막대 1개
-        barThickness: 50,                // ✅ 막대 두께 (원하면 조절)
-      }],
+      labels: [labelText],
+      datasets: [
+        {
+          label: "선택 경기",
+          data: [0],
+          barThickness: 50,
+          backgroundColor:["blue"]
+        },
+        {
+          label: "",          // ✅ 처음엔 빈 라벨 (범례에 안 보이게)
+          data: [0],
+          barThickness: 50,
+          backgroundColor: "",
+          hidden: true,       // ✅ 처음엔 숨김
+        },
+      ],
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        y: { beginAtZero: true }
+      plugins: {
+        legend: {
+          display: true,
+          labels: {
+            // ✅ label이 빈 dataset은 legend에서 제거
+            filter: (item) => item.text && item.text.trim().length > 0,
+          },
+        },
       },
+      scales: { y: { beginAtZero: true } },
     },
   });
 }
 
-function initMetricCharts() {
-  charts.cs10 = createSingleBarChart("c_cs10", "CS @ 10");
-  charts.takedowns = createSingleBarChart("c_takedowns", "takedownsFirstXMinutes");
-  charts.dpm = createSingleBarChart("c_dpm", "DPM / GPM");
-  charts.vpm = createSingleBarChart("c_vpm", "visionScorePerMinute");
-  charts.pings = createSingleBarChart("c_pings", "Pings");
+/* 티어별 데이터 차트 생성 함수 */
+function getBaselineValues() {
+  if (!selectedBaselineName) return null;
+  return TIER_BASELINES[selectedBaselineName] ?? null;
 }
 
-function setChartValue(chart, value) {
+function applyBaselineToChart(chart, baselineLabel, baselineValue) {
   if (!chart) return;
-  chart.data.datasets[0].data = [Number(value ?? 0)];
+
+  const ds = chart.data.datasets[1]; // ✅ baseline dataset
+
+  if (!baselineLabel) {
+    ds.hidden = true;
+    ds.label = "";
+    ds.data = [0];
+    // ds.backgroundColor는 굳이 안 건드려도 됨
+  } else {
+    ds.hidden = false;
+    ds.label = baselineLabel;
+    ds.data = [Number(baselineValue ?? 0)];
+
+    // ✅ 여기서 티어에 따라 색 넣기 (가장 중요)
+    ds.backgroundColor = getBaselineColor(selectedBaselineName);
+  }
+}
+
+
+
+function initMetricCharts() {
+  charts.cs10 = createSingleBarChart("c_cs10", "CS @ 10");
+  charts.takedowns = createSingleBarChart("c_takedowns", "10분 전 적 처치관여 횟수");
+  charts.dpm = createSingleBarChart("c_dpm", "DPM / GPM");
+  charts.vpm = createSingleBarChart("c_vpm", "VPM(분당 시야점수)");
+  charts.pings = createSingleBarChart("c_pings", "핑찍은 횟수");
+}
+
+function setChartValues(chart, matchValue, baselineValue) {
+  if (!chart) return;
+
+  // 0번 = 선택 경기
+  chart.data.datasets[0].data = [Number(matchValue ?? 0)];
+
+  // 1번 = 기준(아이언 평균)
+  const hasBaseline = baselineValue !== null && baselineValue !== undefined;
+  chart.data.datasets[1].hidden = !hasBaseline;
+  chart.data.datasets[1].data = [Number(baselineValue ?? 0)];
+  chart.data.datasets[1].backgroundColor = [(baselineValue.color ?? 0)];
+
   chart.update();
 }
+
 
 function updateMetricCharts(matchJson, stats) {
   // ✅ 정글이면 정글CS, 아니면 라인CS
   const isJungle = stats.position === "JUNGLE";
   const cs10 = isJungle ? stats.jungleCsBefore10Minutes : stats.laneMinionsFirst10Minutes;
 
-  // cs 차트 라벨도 정글/라인에 맞게 바꾸고 싶으면:
-  if (charts.cs10) {
-    charts.cs10.data.labels = [isJungle ? "Jungle CS @ 10" : "Lane CS @ 10"];
-    charts.cs10.data.datasets[0].label = charts.cs10.data.labels[0];
-  }
+  // ✅ DPM/GPM
+  const gpm = Number(stats.goldPerMinute ?? 0);
+  const dpm = Number(stats.damagePerMinute ?? 0);
+  const dpmgpm = gpm > 0 ? dpm / gpm : 0;
 
+  // ✅ baseline (선택된 티어 1개만)
+  const baseline = getBaselineValues();
+  const baselineLabel = baseline ? `${selectedBaselineName} 평균` : null;
+
+  // --- 선택 경기 값(dataset[0]) 업데이트 ---
   setChartValue(charts.cs10, cs10);
   setChartValue(charts.takedowns, stats.takedownsFirstXMinutes);
-  setChartValue(charts.dpm, stats.damagePerMinute / stats.goldPerMinute);
+  setChartValue(charts.dpm, dpmgpm);
   setChartValue(charts.vpm, stats.visionScorePerMinute);
   setChartValue(charts.pings, stats.totalPings);
+
+  // --- baseline 값(dataset[1]) 업데이트 (없으면 숨김 + 범례 제거) ---
+  applyBaselineToChart(charts.cs10, baselineLabel, baseline?.cs10);
+  applyBaselineToChart(charts.takedowns, baselineLabel, baseline?.takedowns);
+  applyBaselineToChart(charts.dpm, baselineLabel, baseline?.DPMGPM);
+  applyBaselineToChart(charts.vpm, baselineLabel, baseline?.vpm);
+  applyBaselineToChart(charts.pings, baselineLabel, baseline?.pings);
+  
+
+  // cs 라벨은 정글/라인에 맞춰 변경
+  if (charts.cs10) {
+    charts.cs10.data.labels = [isJungle ? "Jungle CS @ 10" : "Lane CS @ 10"];
+  }
+
+  // ✅ 차트 update
+  charts.cs10?.update();
+  charts.takedowns?.update();
+  charts.dpm?.update();
+  charts.vpm?.update();
+  charts.pings?.update();
 
   // 제목 갱신
   const me = pickMe(matchJson, currentPuuid);
@@ -346,8 +461,17 @@ function updateMetricCharts(matchJson, stats) {
   const when = matchJson?.info?.gameEndTimestamp ? formatDate(matchJson.info.gameEndTimestamp) : "-";
   const result = me?.win ? "WIN" : "LOSE";
   const titleEl = document.getElementById("chartTitle");
-  if (titleEl) titleEl.textContent = `${result} · ${champ} · ${when}`;
+  const baselineText = baseline ? ` (vs ${selectedBaselineName})` : "";
+  if (titleEl) titleEl.textContent = `${result} · ${champ} · ${when}${baselineText}`;
 }
+
+function setChartValue(chart, value) {
+  if (!chart) return;
+  // dataset[0] = 선택 경기
+  chart.data.datasets[0].data = [Number(value ?? 0)];
+}
+
+
 
 
 // ===== 메인 로직 =====
@@ -442,6 +566,9 @@ container.addEventListener("click", (e) => {
     chartsInitialized = true;
   }
 
+  lastSelectedMatchJson = matchJson;
+  lastSelectedStats = stats;
+
   // ✅ 6) 5개 차트 업데이트
   updateMetricCharts(matchJson, stats);
 
@@ -462,6 +589,36 @@ container.addEventListener("click", (e) => {
     }
   }
 }
+
+function toggleBaseline(tierName) {
+  // 같은 티어 다시 누르면 해제, 다른 티어면 교체(=항상 하나만)
+  selectedBaselineName = (selectedBaselineName === tierName) ? null : tierName;
+
+  // 이미 선택된 경기(차트 생성된 상태)면 즉시 반영
+  if (lastSelectedMatchJson && lastSelectedStats) {
+    if (!chartsInitialized) {
+      initMetricCharts();
+      chartsInitialized = true;
+    }
+    updateMetricCharts(lastSelectedMatchJson, lastSelectedStats);
+  } else {
+    alert("먼저 전적(경기)을 하나 클릭해서 차트를 생성해 주세요.");
+  }
+}
+
+
+document.getElementById("iron")?.addEventListener("click", () => toggleBaseline("IRON"));
+document.getElementById("bronze")?.addEventListener("click", () => toggleBaseline("BRONZE"));
+document.getElementById("silver")?.addEventListener("click", () => toggleBaseline("SILVER"));
+document.getElementById("gold")?.addEventListener("click", () => toggleBaseline("GOLD"));
+document.getElementById("platinum")?.addEventListener("click", () => toggleBaseline("PLATIINUM"));
+document.getElementById("emerald")?.addEventListener("click", () => toggleBaseline("EMERALD"));
+document.getElementById("diamond")?.addEventListener("click", () => toggleBaseline("DIAMOND"));
+document.getElementById("master")?.addEventListener("click", () => toggleBaseline("MASTER"));
+document.getElementById("grandmaster")?.addEventListener("click", () => toggleBaseline("GRANDMASTER"));
+document.getElementById("challenger")?.addEventListener("click", () => toggleBaseline("CHALLENGER"));
+
+
 
 $("back")?.addEventListener("click", () => {
   sessionStorage.removeItem(STORAGE_KEY);

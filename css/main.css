@@ -1,0 +1,266 @@
+body {
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    margin: 24px;
+    background-color: #10131c;
+    color: white;
+
+}
+
+.top {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+button {
+    padding-left: 0px;
+    padding-right: 12px;
+    cursor: pointer;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 18vw;
+    max-width: 180px;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.card {
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 14px;
+    margin: 12px 0;
+}
+
+.muted {
+    color: #666;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+@media (min-width: 900px) {
+    .grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.match {
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.win {
+    border-left: 6px solid #2ecc71;
+    background-color: #28344e;
+}
+
+.lose {
+    border-left: 6px solid #e74c3c;
+    background-color: #59343b;
+}
+
+.mono {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 12px;
+}
+
+/* ...기존 스타일 유지... */
+.match {
+    cursor: pointer;
+    user-select: none;
+}
+
+.match:hover {
+    background: #fafafa;
+}
+
+.extra {
+    margin-top: 10px;
+    padding: 10px;
+    border-top: 1px dashed #ddd;
+}
+
+.extraGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.kv {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.match {
+    cursor: pointer;
+    user-select: none;
+}
+
+.match:hover {
+    background: #fafafa;
+}
+
+.champIcon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid #e5e5e5;
+}
+
+.titleRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.container {
+    max-width: 80%;
+}
+
+.aside {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+img {
+    width: 50px;
+}
+
+.test {
+    display: flex;
+    width: 200px;
+}
+
+#iron {
+    background-color: #938681;
+}
+
+#bronze {
+    background-color: #61423a;
+}
+
+#silver {
+    background-color: #a9b8c2;
+}
+
+#gold {
+    background-color: #c4b354;
+}
+
+#platinum {
+    background-color: #42c2a2;
+}
+
+#emerald {
+    background-color: #46cd83;
+}
+
+#diamond {
+    background-color: #4fa5dc;
+}
+
+#master {
+    background-color: #b73bc2;
+}
+
+#grandmaster {
+    background-color: #d0543f;
+}
+
+#challenger {
+    background-color: #94f4fd;
+}
+
+.chartsGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    /* ✅ 항상 1열 */
+    gap: 14px;
+    margin-top: 12px;
+}
+
+.chartItem {
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.chartLabel {
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.chartWrap {
+    height: 220px;
+}
+
+/* 차트 캔버스 포커스 테두리 제거 */
+canvas:focus {
+    outline: none !important;
+}
+
+/* 차트 섹션/아이템에도 포커스 테두리 제거 (혹시 생기는 경우 대비) */
+#chartSection:focus,
+#chartSection:focus-within,
+.chartItem:focus-within {
+    outline: none !important;
+}
+
+/* ✅ 박스 모델 안정화 */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* ✅ container가 화면에 맞게 줄어들게 */
+.container {
+    /* ✅ 우측 aside(티어 버튼) 공간만큼 빼고, 가운데 영역을 더 넓게 */
+    width: min(1200px, calc(100vw - 320px));
+    margin: 0 auto;
+    /* ✅ 가운데 정렬 */
+    padding: 0 12px;
+}
+
+/* ✅ 차트는 항상 1열(5줄) */
+.chartsGrid {
+    display: grid;
+    grid-template-columns: 1fr !important;
+    gap: 14px;
+    margin-top: 12px;
+}
+
+.chartItem {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+/* ✅ 차트 영역은 반응형 높이 (모바일에서 너무 크지 않게) */
+.chartWrap {
+    position: relative;
+    width: 100%;
+    height: clamp(160px, 35vw, 220px);
+}
+
+/* ✅ 핵심: canvas가 부모 폭/높이에 맞게 꽉 차도록 */
+.chartWrap canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+}
