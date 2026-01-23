@@ -8,6 +8,7 @@ const STORAGE_KEY = "riotSearchPayload";
 const $ = (id) => document.getElementById(id);
 const out = $("out");
 
+
 function parseRiotId(input) {
   const raw = (input ?? "").trim();
 
