@@ -11,9 +11,10 @@
 <body>
     <div class="container">
         <div class="top">
-            <h1 style="margin:0;">Main (ASIA)</h1>
-            <button id="back">검색으로</button>
+            <p class="title">AGENT.GG</p>
+            <span class="slogan">소환사 전적 상세 분석 사이트</span>
             <span id="status" class="muted">준비됨</span>
+            <button id="back">검색으로</button>
         </div>
 
         <div class="card">
@@ -28,36 +29,138 @@
 
         <div class="card">
             <h3 style="margin-top:0;">최근 매치</h3>
-            <div id="matches" class="grid"></div>
+            <div id="matches">
+            </div>
+            <div id="teamAnalysisContainer" class="team-analysis-grid" style="display:none;">
+</div>
+            
             <section id="chartSection" class="card" style="display:none;">
                 <h3>선택한 경기 그래프</h3>
                 <div id="chartTitle" class="muted">경기를 클릭하면 아래 차트가 표시됩니다.</div>
 
                 <div class="chartsGrid">
                     <div class="chartItem">
-                        <div class="chartLabel">10분 전 라인 미니언</div>
+                        <div class="chartLabel">10분 전 처치 CS</div>
                         <div class="chartWrap"><canvas id="c_cs10"></canvas></div>
+                    </div>
+
+                    - 10분 전 처치 CS : 초반 라인전 10분 동안 이루어진 CS 수급 능력을 평가하는 항목입니다. <br> <br>
+                   
+                    <div id="cs10_good" style="display: none;">
+                        잘한점 <br>
+
+                        - 게임 시작 후, 10분 동안 CS가 <span data-ph="cs10_value"></span>개로, "<span data-ph="tier_name"></span>" 티어 평균보다 높습니다. <br>
+                        라인전 우위 또는 효율적인 정글 동선을 통해 원활한 골드 수급을 하셨습니다.<br>
+                        골드가 많을수록 코어 아이템이 나오는 시점이 빨라지며, 이는 곧 교전에서의 승률로 직결됩니다. <br>
+                        현재의 정교한 막타 능력을 유지하여 스노우볼을 더 굴릴 수 있을 것 같습니다.<br> <br>
+                    </div>
+
+                    <div id="cs10_bad" style="display: none;">
+                        아쉬운 점 및 개선할 점<br>
+
+                        - 게임 시작 후, 10분 동안 CS가 <span data-ph="cs10_value"></span>개로, "<span data-ph="tier_name"></span>" 티어 평균보다 낮습니다.<br>
+                        딜량과 골드 격차의 주요 원인이 될 수 있습니다. <br>
+                        투자를 할때 시드머니가 필요하듯이 리그 오브 레전드에서 이기려면 더 많은 골드가 필요하고, 그 기초는 CS입니다.<br>
+                        무리한 딜 교환보다는 확정 수익인 CS 수급에 우선순위를 두는 CS 막타 연습을 권장드립니다.<br>
                     </div>
 
                     <div class="chartItem">
                         <div class="chartLabel">10분 전 적 처치관여 횟수</div>
                         <div class="chartWrap"><canvas id="c_takedowns"></canvas></div>
                     </div>
+                    - 10분 전 적 처치관여 횟수 : 초반 라인전 10분 동안 이루어진 교전, 라인전 능력을 평가하는 항목입니다.
+                     초반 교전이 잦을수록 해당 항목의 점수가 높게 출력됩니다. <br> <br>
 
-                    <div class="chartItem">
-                        <div class="chartLabel">DPM / GPM</div>
-                        <div class="chartWrap"><canvas id="c_dpm"></canvas></div>
+                     <div id="takedowns_good" style="display: none;">
+                        잘한점 <br>
+
+                        - 게임 시작 후, 10분 동안 처치관여수가 <span data-ph="takedowns_value"></span>개로, "<span data-ph="tier_name"></span>" 티어 평균보다 높습니다. <br>
+                        초반 설계가 매우 훌륭합니다. 특히 라이너로서 주도권을 쥐었거나 정글러로서 유효한 갱킹을 성공시켰다는 증거입니다. <br>
+                        이 주도권을 바탕으로 오브젝트(용, 유충)까지 시야를 넓히신다면 게임 승리는 눈 앞에 있을 것입니다. <br> <br>
                     </div>
 
-                    <div class="chartItem">
-                        <div class="chartLabel">VPM(분당 시야점수)</div>
-                        <div class="chartWrap"><canvas id="c_vpm"></canvas></div>
-                    </div>
+                        <div id="takedowns_bad" style="display: none;">
+                            아쉬운 점 <br>
+                            
+                            -  게임 시작 후, 10분동안 처치관여수가 <span data-ph="takedowns_value"></span>개로, "<span data-ph="tier_name"></span>" 티어 평균보다 낮습니다. <br>
+                            초반 라인전에서 상대방의 수에 말려들어 어려움을 겪었거나 순탄하지 않은 라인전을 겪었다고 생각합니다. <br>
+                            해당 지표는 초반 라인전에서 우위를 점해야 킬 관여율이 높아지기 때문에, 라인전 능력을 키워보시는걸 추천드립니다. 
+                        </div>
 
-                    <div class="chartItem">
-                        <div class="chartLabel">핑찍은 횟수</div>
-                        <div class="chartWrap"><canvas id="c_pings"></canvas></div>
-                    </div>
+                     <div class="chartItem">
+                         <div class="chartLabel">골드 당 데미지</div>
+                         <div class="chartWrap"><canvas id="c_dpm"></canvas></div>
+                        </div>
+                        - 골드 당 데미지 : 적에게 입힌 피해량을 획득한 골드로 나눈 값을 계산해 골드 획득 대비 넣은 딜량을 평가하는 항목입니다.
+                         먹은 자원이 적고 입힌 피해량이 높을 수록 해당 항목의 점수가 높게 출력됩니다.
+                         (Faker 선수의 골드당 데미지 점수는 2.41입니다.) <br> <br>
+
+                        <div id="dpm_good" style="display: none;">
+                            잘한점 <br>
+                            
+                            - 골드 획득량 대비, <span data-ph="dpm_value"></span>데미지를 "<span data-ph="tier_name"></span>" 티어 평균보다 높습니다. <br>
+                            연비가 높은 차처럼 가성비가 매우 좋은 편입니다. <br>
+                            현재 방식을 유지하면서 조금 더 공격적으로 플레이 하신다면 더 좋은 결과를 얻으실 수 있습니다. <br> <br>
+                        </div>
+
+                        <div id="dpm_bad" style="display: none;">
+                            아쉬운 점 및 개선할 점 <br>
+                            
+                            - 골드 획득량 대비, <span data-ph="dpm_value"></span>데미지가 "<span data-ph="tier_name"></span>" 티어 평균보다 부족합니다. <br>
+                            가격은 비싼데 양은 적은 고급 레스토랑처럼 가성비가 좋은 편은 아닙니다. <br>
+                            골드는 충분히 섭취되었으나, 그에 상응하는 데미지가 아쉬운 편입니다.<br>
+                            해당 챔피언의 스킬 콤보나 포지션에 조금 더 집중하신다면 데미지 비중이 늘어 날 수 있을 것 같습니다.
+                        </div>
+
+                         <div class="chartItem">
+                             <div class="chartLabel">VPM(분당 시야점수)</div>
+                             <div class="chartWrap"><canvas id="c_vpm"></canvas></div>
+                            </div>
+                            - VPM (분당 시야점수) : 게임중 와드 제거, 제어와드 설치 등으로 얻은 시야 점수를 게임시간으로 나눈 수치로,
+                             게임 내 시야장악에 얼마나 기여했는가를 평가하는 항목입니다. <br> <br>
+
+                            <div id="vpm_good" style="display: none;">
+                                잘한점 <br>
+
+                                - VPM(분당 시야점수)이 <span data-ph="vpm_value"></span> "<span data-ph="tier_name"></span>" 티어 평균보다 높습니다. <br>
+                                우리 팀원들이 넓은 시야를 가질 수 있도록 많은 도움을 주셨습니다.<br>
+                                우리 팀원들이 그 시야로 많은 도움을 받았을 겁니다.<br>
+                                맵에 어두운 곳을 밝히는 것은 승리에 결정적인 역할을 합니다.<br> <br>
+                            </div>
+                            
+                            <div id="vpm_bad" style="display: none;">
+                                아쉬운 점 및 개선할 점 <br>
+                                
+                                - VPM(분당 시야점수)이 <span data-ph="vpm_value"></span> "<span data-ph="tier_name"></span>" 티어 평균보다 낮습니다.<br>
+                                게임을 보는 전체적인 시야가 좁아지면 게임에서 승리하기 힘들어질 수 있습니다.<br>
+                                귀환할 때마다 제어 와드 1개를 사는 습관만으로도 게임 승리에 한발짝 다가 갈수 있습니다.<br>
+                                또는 일반와드(장신구)나 제어와드의 사용 방법이 잘못되지는 않았는지 점검이 필요합니다.
+                            </div>
+
+                             <div class="chartItem">
+                                 <div class="chartLabel">핑찍은 횟수</div>
+                                 <div class="chartWrap"><canvas id="c_pings"></canvas></div>
+                                </div>
+                                - 핑 찍은 횟수 : 게임 내에서 사용한 맵에 표시되는 핑의 횟수를 계산해 팀원과의 의사소통 능력을 평가하는 항목입니다.
+                                 의사소통 능력은 팀 게임에서 중요한 요소 중 하나로, 천상계 유저들의 평균 핑 횟수는 44.57회입니다. <br> <br>
+                                
+                                <div id="pings_good" style="display: none;">
+                                 잘한점 <br>
+
+                                    - 핑 횟수가 <span data-ph="pings_value"></span> "<span data-ph="tier_name"></span>" 티어 평균보다 높습니다. <br>
+                                    급박한 상황에서 빠른 정보를 주기 위한 핑이 많을 수록 티어 상승의 확률은 더욱더 높아집니다. <br>
+                                    팀 전체가 하나의 유기체처럼 움직이게 하는 훌륭한 리더쉽이 보이기도 합니다.<br>
+                                    게임 승리에 도움되는 핑을 자주 사용해 보세요.<br><br>
+                                </div>
+
+                                <div id="pings_bad" style="display: none;">
+                                    아쉬운 점 및 개선할 점<br>
+                                    
+                                    - 핑 횟수가 <span data-ph="pings_value"></span> "<span data-ph="tier_name"></span>" 티어 평균보다 낮습니다.<br>
+                                    리그 오브 레전드는 팀 게임이기에 정보의 공유가 늦어지면 팀 전체의 리스크가 커집니다.<br>
+                                    더 높은 티어를 가기 위해선 감정적인 핑이 아닌, <br>
+                                    적의 위치나 스펠 유무 같은 '고급 정보'를 더 많이 제공하는 핑 사용을 늘리는 것이 필요해 보입니다.
+                                </div>
                 </div>
             </section>
 

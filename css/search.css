@@ -1,74 +1,193 @@
-body { 
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; 
-    margin: 24px;
-    background-color: #10131c;
-}
-
-.row { 
-    width: 100%;
-height: 40px;
-margin-top: 24px;
-display: flex;
-justify-content: center;
-}
-
-input { 
-    padding: 10px; 
-    height: 44px;
-    width: 280px;
-    font-size: 16px;
-    border: 1px solid black;
-    border-top-left-radius: 8px;
-    border-bottom-left-radius: 8px;
-    box-sizing: border-box;
-}
-button { 
-    padding: 10px; 
-    height: 44px;
-    width: 60px;
-    border: 1px solid black;
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
-    cursor: pointer;
-    background-color: #4f8cff;
-    color: white;
-    font-size: 16px;
-    font-weight: 700;
-    box-sizing: border-box; 
-}
-button { 
-    cursor: pointer; 
-    width:auto; 
-}
-pre {
-    display: none;
-    background:#111; 
-    color:#eee; 
-    padding: 12px; 
-    border-radius: 10px; 
-    overflow:auto; 
-    }
-.hint {
-    color:#666; 
-    font-size: 13px; 
-    margin-top: 10px;
-    display: flex;
-    justify-content: center; 
-    }
-
-.title {
-    color: #4f8cff;
-    font-size: 48px;
-    font-weight: 800;
+/* 기본 배경 및 폰트 설정 */
+body {
+    background-color: #0B0E11; /* 깊은 블랙 네이비 */
+    color: #E3E6E8;
+    font-family: 'Pretendard', sans-serif;
+    margin: 0;
     display: flex;
     justify-content: center;
-    margin-bottom: 0;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding-top: 80px;
+}
+
+.search-container {
+    width: 100%;
+    max-width: 1000px;
+    text-align: center;
+}
+
+
+.title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: #00F2FF; /* 시안 블루 */
+    margin-bottom: 50px;
+    letter-spacing: -1px;
 }
 
 .info {
+    color: #7B8491;
+    margin-bottom: 40px;
+}
+
+/* 검색창 스타일 */
+.search-row {
+    display: flex;
+    max-width: 600px;
+    margin: 0 auto;
+    background: #161A21;
+    border: 2px solid #2D333F;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: 0.3s;
+}
+
+.search-row:focus-within {
+    border-color: #00F2FF;
+    box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
+}
+
+input {
+    flex: 1;
+    background: transparent;
+    border: none;
     color: white;
+    padding: 18px 25px;
+    font-size: 1.1rem;
+    outline: none;
+}
+
+button {
+    background: #00F2FF;
+    color: #0B0E11;
+    border: none;
+    padding: 0 30px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #00D1DB;
+}
+
+/* 카드 제목 */
+.content-title{
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    margin: 150px 0 40px;
+    color: #00F2FF; /* 로고와 동일한 색상 */
+    letter-spacing: -0.5px;
+    /* 그라데이션 제거 */
+    background: none;
+    -webkit-text-fill-color: initial;
+}
+
+
+/* 카드 그리드 레이아웃 */
+.content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.info-card {
+    background: #161A21;
+    border-radius: 16px;
+    padding: 25px;
+    text-align: left;
+    border: 1px solid #2D333F;
+    position: relative;
+}
+
+.info-card h3 {
+    font-size: 1.1rem;
+    margin-top: 0;
+    color: #E3E6E8;
+    margin-bottom: 20px;
+}
+
+/* 이미지의 글로우 효과 재현 */
+.glow-cyan { border-top: 3px solid #00F2FF; }
+.glow-purple { border-top: 3px solid #7000FF; }
+.glow-blue { border-top: 3px solid #4fa5dc; }
+
+/* 리스트 스타일 */
+.user-list {
+    list-style: none;
+    padding: 0;
+}
+
+.user-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #2D333F;
+}
+
+.tagwin { color: #00F2FF; font-size: 0.85rem; font-weight: bold; }
+.taglose { color: #FF4E50; font-size: 0.85rem; font-weight: bold; }
+
+.mini-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+/* 그래프 컨테이너 */
+.mini-chart-container {
     display: flex;
     justify-content: center;
-    margin-top: 0;
-    margin-bottom: 10px;
+    align-items: flex-end; /* 막대가 아래에서 위로 솟도록 설정 */
+    gap: 15px;
+    height: 80px; /* 그래프 최대 높이 */
+    margin-bottom: 20px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 막대 공통 스타일 */
+.bar {
+    width: 30px;
+    border-radius: 4px 4px 0 0;
+    animation: bar-move 2s ease-in-out infinite alternate; /* 2초 동안 반복 */
+}
+
+/* 내 평균 전적 막대 (아쿠아) */
+.bar-me-avg {
+    background-color: aqua;
+    height: 70%;
+    animation-delay: 0.8s;
+}
+
+/* 내 전적 막대 (파랑) */
+.bar-me {
+    background: #0000FF; /* 이미지의 진한 파랑 */
+    height: 60%;
+    animation-delay: 0s; /* 서로 엇갈리게 움직이도록 딜레이 조정 */
+}
+
+/* 티어 평균 막대 (연하늘) */
+.bar-avg {
+    background: #4fa5dc; /* 이미지의 다이아몬드 평균 색상 */
+    height: 85%;
+    animation-delay: 0.5s;
+}
+
+/* 위아래로 움직이는 애니메이션 정의 */
+@keyframes bar-move {
+    0% {
+        height: 40%; /* 시작 높이 */
+        opacity: 0.7;
+    }
+    100% {
+        height: 90%; /* 끝 높이 */
+        opacity: 1;
+        filter: brightness(1.2); /* 정점에서 살짝 밝아지는 효과 */
+    }
 }

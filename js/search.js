@@ -1,5 +1,5 @@
 // ✅ 여기에 Riot API Key 넣기 (개발용 / 배포 금지)
-const RIOT_API_KEY = "Riot API 입력";
+const RIOT_API_KEY = "RGAPI-08555af4-2fe3-46d1-b532-89b1c5cebfea";
 
 // ✅ ASIA 고정
 const REGION = "asia";
@@ -42,6 +42,7 @@ async function riotFetchJson(url) {
   }
   return data;
 }
+
 
 /* 라이엇 계정 조회하는 기능 (입력받은 닉네임과 태그이름을 통해 조회) */
 async function getAccountByRiotId(gameName, tagLine) {

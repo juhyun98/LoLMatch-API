@@ -1,24 +1,69 @@
 <!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>LoL 전적 검색 - Search</title>
-  <link rel="stylesheet" href="css/search.css">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LoL 전적 검색 - AGENT.GG</title>
+    <link rel="stylesheet" href="css/search.css">
 </head>
-
 <body>
-  <p class="title">AGENT.GG</p>
-  <p class="info">소환사님의 전적을 검색하고 분석해드립니다.</p>
-  <form id="form">
-    <div class="row">
-      <input id="riotId" placeholder="예) Hide on bush#KR1" />
-      <button type="submit">검색</button>
+    <div class="search-container">
+        <p class="title">AGENT.GG</p>
+
+        <form id="form">
+            <div class="search-row">
+                <input id="riotId" placeholder="소환사명#태그 (예: Hide on bush#KR1)" />
+                <button type="submit">분석하기</button>
+            </div>
+        </form>
+
+        <div class="content-title">
+          AGENT.GG만의 차별점!
+        </div>
+
+        <div class="content-grid">
+            <div class="info-card glow-cyan">
+                <h2>다른 곳에서 볼 수 없던 지표</h2>
+                <ul class="tip-text">
+                    <li> 10분당 CS </li>
+                    <li> 10분 처치관여 </li>
+                    <li> DPG (골드 당 데미지)</li>
+                    <li> 분당 시야점수 </li>
+                    <li> 핑 횟수 </li>
+                </ul>
+            </div>
+            <div class="info-card glow-purple">
+    <div class="card-header">
+        <h2>보는 전적에서 배우는 전적으로</h2>
     </div>
-    <div class="hint">ID#tag를 입력하세요.(공백 가능)</div>
+    <div class="trend-content">
+        <div class="analysis-box">
+            <ul class="analysis-text">
+                <li>티어별 대비 나의 지표 비교</li>
+                <li>티어 상승을 위해 우선적으로 집중해야 할 핵심 지표 타겟팅</li>
+                <li>플레이 성향에 따른 <strong>맞춤형 개선 포인트</strong> 도출</li>
+            </ul>
+        </div>
+    </div>
+</div>
 
-  </form>
-
-  <script src="js/search.js"></script>
+            <div class="info-card glow-blue">
+    <div class="card-header">
+        <h2>한 눈에 들어오는 지표</h2>
+    </div>
+    <div class="trend-content">
+        <div class="mini-chart-container">
+            <div class="bar bar-me-avg"></div>
+            <div class="bar bar-me"></div>
+            <div class="bar bar-avg"></div>
+        </div>
+        <div class="analysis-box">
+        </div>
+    </div>
+    <p class="card-footer"></p>
+</div>
+        </div>
+    </div>
+    <script src="js/search.js"></script>
 </body>
 </html>
