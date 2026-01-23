@@ -1,5 +1,5 @@
 // ✅ Riot API Key (노출되면 재발급 권장)
-const RIOT_API_KEY = "Riot-API키 입력";
+const RIOT_API_KEY = "RGAPI-f9cd67e9-3f9d-4cc6-aa4d-a045b2838adf";
 
 // ✅ ASIA 고정
 const REGION = "asia";
@@ -226,7 +226,7 @@ function renderMatchCard(matchJson, puuid, matchId) {
 function loadPayloadOrRedirect() {
     const raw = sessionStorage.getItem(STORAGE_KEY);
     if (!raw) {
-        window.location.assign("./search.html");
+        window.location.assign("./index.html");
         return null;
     }
     return JSON.parse(raw);
@@ -1098,7 +1098,7 @@ document.getElementById("challenger")?.addEventListener("click", () => toggleBas
 
 $("back")?.addEventListener("click", () => {
     sessionStorage.removeItem(STORAGE_KEY);
-    window.location.assign("./search.html");
+    window.location.assign("./index.html");
 });
 
 setTierCommentVisible(false);
