@@ -1,5 +1,5 @@
 // ✅ Riot API Key (노출되면 재발급 권장)
-const RIOT_API_KEY = "RGAPI-08555af4-2fe3-46d1-b532-89b1c5cebfea";
+const RIOT_API_KEY = "Riot-API키 입력";
 
 // ✅ ASIA 고정
 const REGION = "asia";
