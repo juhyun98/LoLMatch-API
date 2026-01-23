@@ -226,7 +226,7 @@ function renderMatchCard(matchJson, puuid, matchId) {
 function loadPayloadOrRedirect() {
     const raw = sessionStorage.getItem(STORAGE_KEY);
     if (!raw) {
-        window.location.assign("./search.html");
+        window.location.assign("./index.html");
         return null;
     }
     return JSON.parse(raw);
@@ -1138,7 +1138,7 @@ document.getElementById("challenger")?.addEventListener("click", () => toggleBas
 
 $("back")?.addEventListener("click", () => {
     sessionStorage.removeItem(STORAGE_KEY);
-    window.location.assign("./search.html");
+    window.location.assign("./index.html");
 });
 
 setTierCommentVisible(false);
