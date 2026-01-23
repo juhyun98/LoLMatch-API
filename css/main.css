@@ -1,13 +1,14 @@
 body {
     font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
     margin: 24px;
-    background-color: #10131c;
+    background: linear-gradient(180deg, #0e192e 0%, #0a1c3f 100%);
+    ;
     color: white;
 
 }
 
 .title {
-    color: #4f8cff;
+    color: #00F2FF;
     font-size: 36px;
     font-weight: 800;
     margin: 12px;
@@ -35,22 +36,45 @@ button {
 }
 
 #back {
-    background-color: #4f8cff;
-    color: white;
-    width: 80px;
-    padding: 4px;
+    background-color: #00F2FF;
+    color: #003B46;
+    width: 110px;
+    height: 48px;
+    padding: 0 !important;
     margin-left: auto;
+    border-radius: 8px;    /* 둥근 모서리 유지 */
+    border: none;
+    
+    /* 중앙 정렬 핵심 설정 */
+    display: flex;
+    align-items: center;
+    justify-content: center; /* space-between 대신 center 사용 */
+    border: none;
+    transition: 0.2s;
+
+    font-size: 16px;       /* 글자 크기도 적절하게 유지 */
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#back:hover {
+    filter: brightness(1.1);
+    transform: translateY(-2px); /* 호버 시 살짝 떠오름 */
 }
 
 .card {
-    border: 1px solid #ddd;
+    border: 0.1px solid #2D333F;
+    background: #161A21;
     border-radius: 12px;
     padding: 14px;
     margin: 12px 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .muted {
-    color: #666;
+    color: #9e9eb1;
+
 }
 
 .slogan {
@@ -71,9 +95,16 @@ button {
 }
 
 .match {
-    border: 1px solid #eee;
+    border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 12px;
     padding: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+    margin-bottom: 16px;
+}
+.match:hover {
+    transform: translateY(-2px); /* 마우스 올리면 살짝 떠오름 */
+    box-shadow: 0 6px 12px rgba(0, 242, 255, 0.15); /* 시안 블루 빛 그림자 */
 }
 
 .win {
@@ -102,10 +133,11 @@ button {
 }
 
 .match.win:hover {
-    background-color:#93b7f1;
+    background-color: #93b7f1;
 }
+
 .match.lose:hover {
-    background-color : #e75a6d;
+    background-color: #e75a6d;
 }
 
 .extra {
@@ -115,12 +147,14 @@ button {
 }
 
 .extraGrid {
-    background: rgba(0, 0, 0, 0.2); /* 약간 어두운 배경으로 요약 느낌 */
+    background: rgba(0, 0, 0, 0.2);
+    /* 약간 어두운 배경으로 요약 느낌 */
     padding: 15px;
     border-radius: 8px;
     margin-bottom: 20px;
     display: grid;
-    grid-template-columns: 1fr 1fr; /* 2열 유지 */
+    grid-template-columns: 1fr 1fr;
+    /* 2열 유지 */
     gap: 10px;
 }
 
@@ -171,6 +205,8 @@ button {
     flex-direction: column;
     gap: 12px;
 }
+
+
 
 img {
     width: 50px;
@@ -303,13 +339,15 @@ canvas:focus {
 
 .team-analysis-grid {
     display: grid;
-    grid-template-columns: 1fr; /* 1열 와이드 */
+    grid-template-columns: 1fr;
+    /* 1열 와이드 */
     gap: 24px;
     background: #1c212e;
     padding: 25px;
     border-radius: 12px;
     margin-top: 15px;
-    box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
+
 }
 
 .analysis-item {
@@ -332,7 +370,7 @@ canvas:focus {
     color: #cbd5e0;
     text-align: center;
     letter-spacing: 1.5px;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .comparison-container {
@@ -365,23 +403,31 @@ canvas:focus {
 }
 
 .bar {
-    height: 100%;           /* ✅ 부모(.bar-wrapper)의 높이를 100% 채움 */
-    display: block;         /* ✅ 요소가 공간을 차지하도록 명시 */
+    height: 100%;
+    /* ✅ 부모(.bar-wrapper)의 높이를 100% 채움 */
+    display: block;
+    /* ✅ 요소가 공간을 차지하도록 명시 */
     transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* 블루팀: 오른쪽에서 왼쪽으로 차오르는 느낌 */
-.blue-row { justify-content: flex-end; }
-.blue-bar { 
-    background: linear-gradient(270deg, #4287f5, #2c67f2)!important; 
+.blue-row {
+    justify-content: flex-end;
+}
+
+.blue-bar {
+    background: linear-gradient(270deg, #4287f5, #2c67f2) !important;
     border-radius: 0 6px 6px 0;
     box-shadow: 0 0 8px rgba(66, 135, 245, 0.4);
 }
 
 /* 레드팀: 왼쪽에서 오른쪽으로 차오르는 느낌 */
-.red-row { justify-content: flex-start; }
-.red-bar { 
-    background: linear-gradient(90deg, #e84057, #f22c44)!important;
+.red-row {
+    justify-content: flex-start;
+}
+
+.red-bar {
+    background: linear-gradient(90deg, #e84057, #f22c44) !important;
     border-radius: 6px 0 0 6px;
     box-shadow: 0 0 8px rgba(232, 64, 87, 0.4);
 }
@@ -397,7 +443,8 @@ canvas:focus {
 .champ-mini {
     width: 22px;
     height: 22px;
-    border-radius: 50%; /* 원형 아이콘으로 변경하여 더 세련되게 */
+    border-radius: 50%;
+    /* 원형 아이콘으로 변경하여 더 세련되게 */
     border: 1.5px solid rgba(255, 255, 255, 0.3);
     object-fit: cover;
 }
@@ -411,7 +458,8 @@ canvas:focus {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: transparent; /* 배경을 투명하게 */
+    background: transparent;
+    /* 배경을 투명하게 */
     position: relative;
     z-index: 2;
 }
@@ -420,9 +468,12 @@ canvas:focus {
 .center-circle::before {
     content: "";
     position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     border-radius: 50%;
-    background: var(--donut-gradient, #444); 
+    background: var(--donut-gradient, #444);
     z-index: -2;
 }
 
@@ -430,8 +481,13 @@ canvas:focus {
 .center-circle::after {
     content: "";
     position: absolute;
-    top: 6px; left: 6px; right: 6px; bottom: 6px; /* 두께 조절 */
-    background: #1c212e; /* 매치카드 내부 배경색과 동일하게 설정 */
+    top: 6px;
+    left: 6px;
+    right: 6px;
+    bottom: 6px;
+    /* 두께 조절 */
+    background: #1c212e;
+    /* 매치카드 내부 배경색과 동일하게 설정 */
     border-radius: 50%;
     z-index: -1;
 }
@@ -444,5 +500,319 @@ canvas:focus {
     /* 배경이 어떤 색이든 글자가 잘 보이도록 검은색 외곽선 추가 */
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8), -1px -1px 2px rgba(0, 0, 0, 0.8);
     z-index: 3;
+}
+
+
+/* ===== 전체 섹션 ===== */
+#chartSection {
+    margin-top: 24px;
+    padding: 24px;
+    background: linear-gradient(180deg, #0f172a, #020617);
+    border-radius: 14px;
+}
+
+/* ===== 타이틀 ===== */
+#chartSection h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+#chartTitle {
+    font-size: 13px;
+    color: #9ca3af;
+    margin-bottom: 24px;
+}
+
+/* ===== 차트 그리드 ===== */
+.chartsGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 28px;
+}
+
+/* ===== 차트 카드 ===== */
+.chartItem {
+    background: #020617;
+    border-radius: 14px;
+    padding: 18px 20px 22px;
+    box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.08);
+}
+
+/* 지표 제목 */
+.chartLabel {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 14px;
+    color: #e5e7eb;
+}
+
+/* 그래프 영역 */
+.chartWrap {
+    height: 220px;
+}
+
+/* ===== 설명 텍스트 (카드 아래 문단들) ===== */
+.chartsGrid>br,
+.chartsGrid>div:not(.chartItem):not([id$="_good"]):not([id$="_bad"]) {
+    font-size: 13px;
+    color: #9ca3af;
+    line-height: 1.7;
+}
+
+/* ===== GOOD / BAD 공통 ===== */
+[id$="_good"],
+[id$="_bad"] {
+    margin-top: 14px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+/* GOOD */
+[id$="_good"] {
+    background: rgba(34, 211, 238, 0.08);
+    border-left: 4px solid #22d3ee;
+    color: #e0f7ff;
+}
+
+/* BAD */
+[id$="_bad"] {
+    background: rgba(248, 113, 113, 0.08);
+    border-left: 4px solid #f87171;
+    color: #fee2e2;
+}
+
+/* 강조 숫자 */
+[id$="_good"] span,
+[id$="_bad"] span {
+    font-weight: 700;
+    color: #fff;
+}
+
+/* ===== 지표 제목 (chartLabel) ===== */
+.chartLabel {
+    font-size: 18px;
+    font-weight: 700;
+    color: #e5e7eb;
+
+    margin-bottom: 14px;
+    padding-left: 14px;
+
+    position: relative;
+}
+
+/* 왼쪽 강조 바 */
+.chartLabel::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 4px;
+    width: 4px;
+    height: 70%;
+    background: linear-gradient(180deg, #22d3ee, #38bdf8);
+    border-radius: 4px;
+}
+
+/* 티어 이름이 들어가는 span 태그의 기본 스타일 */
+[data-ph="tier_name"] {
+    font-weight: bold;
+    transition: color 0.3s ease;
+    /* 색상이 부드럽게 변하도록 설정 */
+}
+
+/* 분석 텍스트 내 티어 이름 강조 */
+[data-ph="tier_name"] {
+    font-weight: bold;
+}
+
+/* 티어별 색상 대입 */
+.tier-color-IRON {
+    color: #938681 !important;
+}
+
+.tier-color-BRONZE {
+    color: #61423a !important;
+}
+
+.tier-color-SILVER {
+    color: #a9b8c2 !important;
+}
+
+.tier-color-GOLD {
+    color: #c4b354 !important;
+}
+
+.tier-color-PLATIINUM {
+    color: #42c2a2 !important;
+}
+
+.tier-color-EMERALD {
+    color: #46cd83 !important;
+}
+
+.tier-color-DIAMOND {
+    color: #4fa5dc !important;
+}
+
+.tier-color-MASTER {
+    color: #b73bc2 !important;
+}
+
+.tier-color-GRANDMASTER {
+    color: #d0543f !important;
+}
+
+.tier-color-CHALLENGER {
+    color: #94f4fd !important;
+}
+
+/* 기본 레이아웃 */
+.aside {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 200px;
+}
+
+/* 체크박스 숨김 */
+.tier-ckb {
+    display: none;
+}
+
+/* 버튼 기본 스타일 (원래 색상 기반) */
+.tier-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 18px;
+    border-radius: 12px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    user-select: none;         /* 표준 속성 /
+
+    / 클릭 시 생기는 파란색 테두리(아웃라인) 제거 */
+    outline: none;
+}
+
+.tier-btn img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+/* 각 티어별 고유 배경색 (이미지 기준) */
+.btn-iron {
+    background-color: #574e4e;
+}
+
+.btn-bronze {
+    background-color: #8c513a;
+}
+
+.btn-silver {
+    background-color: #80989d;
+}
+
+.btn-gold {
+    background-color: #cd8837;
+}
+
+.btn-platinum {
+    background-color: #2da380;
+}
+
+.btn-emerald {
+    background-color: #20b052;
+}
+
+.btn-diamond {
+    background-color: #576bcc;
+}
+
+.btn-master {
+    background-color: #9d329d;
+}
+
+.btn-grandmaster {
+    background-color: #cd452d;
+}
+
+.btn-challenger {
+    background-color: #4ec3dc;
+}
+
+/* ⭐ 마우스 올렸을 때 살짝 밝아짐 */
+.tier-btn:hover {
+    filter: brightness(1.1);
+}
+
+/* ⭐ 클릭(토글) 되었을 때 강조 효과 */
+.tier-ckb:checked+.tier-btn {
+    transform: scale(1.08) translateX(10px);
+    /* 살짝 커지면서 오른쪽으로 이동 */
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.2)), var(--bg-color);
+    /* 기존 색상에 광택 추가 */
+    border: 2px solid white;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+/* 체크된 상태의 그라데이션 (선택 사항: 보라색 계열로 강조하고 싶을 때) */
+.tier-ckb:checked+.tier-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+.tierGuide {
+    font-size: 15px;
+    /* 작게 */
+    font-weight: 700;
+    letter-spacing: 0.6px;
+
+    color: #a9f51c;
+    /* 네온 옐로우 + 그린 */
+    text-align: center;
+    display: block;
+
+    margin-bottom: 12px;
+    padding-left: 10px;
+
+    opacity: 0.9;
+    position: relative;
+
+    /* 네온 느낌 */
+    text-shadow:
+        0 0 6px rgba(169, 245, 28, 0.45),
+        0 0 14px rgba(70, 205, 131, 0.25);
+}
+
+/* 왼쪽 포인트 바 */
+.tierGuide::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 3px;
+    height: 70%;
+    border-radius: 3px;
+
+    background: linear-gradient(180deg,
+            #a9f51c,
+            #46cd83);
+
+    box-shadow:
+        0 0 6px rgba(169, 245, 28, 0.6);
+}
+
+#status{
+    display: none;
+}
+.backSearchpage {
+    text-decoration-line: none;
+    color: #00F2FF;
 }
 

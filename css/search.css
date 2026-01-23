@@ -1,14 +1,19 @@
 /* 기본 배경 및 폰트 설정 */
 body {
-    background-color: #0B0E11; /* 깊은 블랙 네이비 */
+    /* 기존보다 한 단계 밝은 미드나잇 블루 그라데이션 */
+    background: linear-gradient(180deg, #0e192e 0%, #0a1c3f 100%); 
     color: #E3E6E8;
     font-family: 'Pretendard', sans-serif;
     margin: 0;
+    padding: 0;
+    overflow: hidden;
+    overflow-x: hidden; /* 가로 스크롤 절대 방지 */
     display: flex;
     justify-content: center;
     align-items: flex-start;
     min-height: 100vh;
     padding-top: 80px;
+    background-attachment: fixed;
 }
 
 .search-container {
@@ -19,12 +24,27 @@ body {
 
 
 .title {
-    font-size: 3.5rem;
+   font-size: 3.5rem;
     font-weight: 800;
-    color: #00F2FF; /* 시안 블루 */
+    color: #00F2FF;
     margin-bottom: 50px;
     letter-spacing: -1px;
+ 
 }
+
+/* 부제목 */
+.sub-description {
+    font-size: 1.1rem;      /* 너무 크지 않게 */
+    font-weight: 500;
+    color: #6fbac7;         /* 기존 info 색상과 통일감 */
+    margin-top: -40px;      /* 제목과의 간격 좁히기 (필요시 조정) */
+    margin-bottom: 40px;    /* 검색창과의 간격 */
+    letter-spacing: 2px;    /* 자간을 넓히면 훨씬 전문적으로 보입니다 */
+    text-transform: uppercase; /* 영문 혼용 시 고급스러움 추가 */
+    opacity: 0.9;
+    text-shadow: 0 0 8px rgba(0, 242, 255, 0.2);
+}
+
 
 .info {
     color: #7B8491;
@@ -37,7 +57,7 @@ body {
     max-width: 600px;
     margin: 0 auto;
     background: #161A21;
-    border: 2px solid #2D333F;
+    border: 0.5px solid #2D333F;
     border-radius: 12px;
     overflow: hidden;
     transition: 0.3s;
@@ -77,12 +97,13 @@ button:hover {
     font-size: 2rem;
     font-weight: 700;
     text-align: center;
-    margin: 150px 0 40px;
-    color: #00F2FF; /* 로고와 동일한 색상 */
+    margin: 100px 0 40px;
+    color: #00F2FF;
     letter-spacing: -0.5px;
-    /* 그라데이션 제거 */
     background: none;
     -webkit-text-fill-color: initial;
+    /* 배경이 어두워졌으므로 가독성을 위해 살짝의 그림자 추가 */
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 
@@ -160,21 +181,21 @@ button:hover {
 
 /* 내 평균 전적 막대 (아쿠아) */
 .bar-me-avg {
-    background-color: aqua;
+    background-color: white;
     height: 70%;
     animation-delay: 0.8s;
 }
 
 /* 내 전적 막대 (파랑) */
 .bar-me {
-    background: #0000FF; /* 이미지의 진한 파랑 */
+    background: rgba(80,140,255,0.85); /* 이미지의 진한 파랑 */
     height: 60%;
     animation-delay: 0s; /* 서로 엇갈리게 움직이도록 딜레이 조정 */
 }
 
 /* 티어 평균 막대 (연하늘) */
 .bar-avg {
-    background: #4fa5dc; /* 이미지의 다이아몬드 평균 색상 */
+    background: #49E9F0; /* 이미지의 다이아몬드 평균 색상 */
     height: 85%;
     animation-delay: 0.5s;
 }
@@ -190,4 +211,16 @@ button:hover {
         opacity: 1;
         filter: brightness(1.2); /* 정점에서 살짝 밝아지는 효과 */
     }
+}
+
+/* 동적 배경 */
+
+#particle-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    z-index: -1; /* 콘텐츠 뒤로 보내서 버튼 클릭 방해 안 함 */
+    pointer-events: none; /* 마우스 이벤트를 통과시켜 버튼이 눌리게 함 */
+    display: block; /* 캔버스 하단의 미세한 기본 여백 제거 */
 }

@@ -11,8 +11,7 @@
 <body>
     <div class="container">
         <div class="top">
-            <p class="title">AGENT.GG</p>
-            <span class="slogan">소환사 전적 상세 분석 사이트</span>
+            <p class="title"><a class="backSearchpage" href="search.html">AGENT.GG</a></p>
             <span id="status" class="muted">준비됨</span>
             <button id="back">검색으로</button>
         </div>
@@ -62,7 +61,9 @@
                         딜량과 골드 격차의 주요 원인이 될 수 있습니다. <br>
                         투자를 할때 시드머니가 필요하듯이 리그 오브 레전드에서 이기려면 더 많은 골드가 필요하고, 그 기초는 CS입니다.<br>
                         무리한 딜 교환보다는 확정 수익인 CS 수급에 우선순위를 두는 CS 막타 연습을 권장드립니다.<br>
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/K91BmdrrIY4?si=AFGatl3mOFhI8BTf" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                     </div>
+
 
                     <div class="chartItem">
                         <div class="chartLabel">10분 전 적 처치관여 횟수</div>
@@ -85,6 +86,7 @@
                             -  게임 시작 후, 10분동안 처치관여수가 <span data-ph="takedowns_value"></span>개로, "<span data-ph="tier_name"></span>" 티어 평균보다 낮습니다. <br>
                             초반 라인전에서 상대방의 수에 말려들어 어려움을 겪었거나 순탄하지 않은 라인전을 겪었다고 생각합니다. <br>
                             해당 지표는 초반 라인전에서 우위를 점해야 킬 관여율이 높아지기 때문에, 라인전 능력을 키워보시는걸 추천드립니다. 
+                            
                         </div>
 
                      <div class="chartItem">
@@ -160,6 +162,7 @@
                                     리그 오브 레전드는 팀 게임이기에 정보의 공유가 늦어지면 팀 전체의 리스크가 커집니다.<br>
                                     더 높은 티어를 가기 위해선 감정적인 핑이 아닌, <br>
                                     적의 위치나 스펠 유무 같은 '고급 정보'를 더 많이 제공하는 핑 사용을 늘리는 것이 필요해 보입니다.
+                                    <iframe width="560" height="315" src="https://www.youtube.com/embed/KFDrd7D1YR8?si=b2xeHNy97Uhppozx" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                                 </div>
                 </div>
             </section>
@@ -168,59 +171,69 @@
     </div>
 
     <div class="aside">
+        
+        <label class="tierGuide">티어를 눌러 비교해보세요!</label>
+    
+    <input type="checkbox" id="iron" class="tier-ckb">
+    <label for="iron" class="tier-btn btn-iron" data-tier="IRON">
+        <img src="https://i.namu.wiki/i/idqrOdOF4HRncFvZZFKPj6ZpWRDDofvzTJ2qxOGHCgpLVk8l3SvhMFVv3bE4d6ewPISqb7GWWWBHsaErb7CKzCKMwOHVV0nrTSHR6COs-A0PA-_LQYMDYh5Si8mlINeRAwBHU4uw_oRp_-tn-sD3QA.webp" alt="">
+        아이언
+    </label>
 
+    <input type="checkbox" id="bronze" class="tier-ckb">
+    <label for="bronze" class="tier-btn btn-bronze" data-tier="BRONZE">
+        <img src="https://i.namu.wiki/i/rlgYdEOjfAUU0FG31GRaSccilWA9m8QTvNcXpx2hvrrHuxstLeaO3KHIw_zyRgBXlZC2XBBPo50daz63X7ATnmOlsIXEfqdoihwtZgV_FpSSx7xrRf3kajgimLGGCubi187H_OnmeBc80qEDJ8G2AA.webp" alt="">
+        브론즈
+    </label>
 
-        <button id="iron">
-            <img src="https://i.namu.wiki/i/idqrOdOF4HRncFvZZFKPj6ZpWRDDofvzTJ2qxOGHCgpLVk8l3SvhMFVv3bE4d6ewPISqb7GWWWBHsaErb7CKzCKMwOHVV0nrTSHR6COs-A0PA-_LQYMDYh5Si8mlINeRAwBHU4uw_oRp_-tn-sD3QA.webp"
-                alt="">
-            아이언</button>
+    <input type="checkbox" id="silver" class="tier-ckb">
+    <label for="silver" class="tier-btn btn-silver" data-tier="SILVER">
+        <img src="https://i.namu.wiki/i/fp2iX76DigUmgNFEeqzUegWC2FtOB7JALM8eWeHlC0OAqfdpc-OyeNUIyRMSnl8BAZLmTPgn78qEeOs3sZhK8eEGSepisc7y_H-9VOQEC_uf2BKYYQleGTi69zz0Ev4jqzDkrPf5PNmAs2i84y-lOA.webp" alt="">
+        실버
+    </label>
 
-        <button id="bronze">
-            <img src="https://i.namu.wiki/i/rlgYdEOjfAUU0FG31GRaSccilWA9m8QTvNcXpx2hvrrHuxstLeaO3KHIw_zyRgBXlZC2XBBPo50daz63X7ATnmOlsIXEfqdoihwtZgV_FpSSx7xrRf3kajgimLGGCubi187H_OnmeBc80qEDJ8G2AA.webp"
-                alt="">
-            브론즈</button>
+    <input type="checkbox" id="gold" class="tier-ckb">
+    <label for="gold" class="tier-btn btn-gold" data-tier="GOLD">
+        <img src="https://i.namu.wiki/i/yq5jeR89DkJozjfM_XpUFTLLu54bQanQg8ODB4niIQP5HT9p_9NSrbB5qHbMXbJVHCoO1NuDKfroT6zZ-CYJ36Vb04nk3opalrwPX16nVhdEmCsVIs1jymi1AK2O1m5dKeijZLGLFFsD6RQ_q7LBGw.webp" alt="">
+        골드
+    </label>
 
-        <button id="silver">
-            <img src="https://i.namu.wiki/i/fp2iX76DigUmgNFEeqzUegWC2FtOB7JALM8eWeHlC0OAqfdpc-OyeNUIyRMSnl8BAZLmTPgn78qEeOs3sZhK8eEGSepisc7y_H-9VOQEC_uf2BKYYQleGTi69zz0Ev4jqzDkrPf5PNmAs2i84y-lOA.webp"
-                alt="">
-            실버</button>
+    <input type="checkbox" id="platinum" class="tier-ckb">
+    <label for="platinum" class="tier-btn btn-platinum" data-tier="PLATIINUM">
+        <img src="https://i.namu.wiki/i/ZWNBRH1i2hVvy1r9FUCkVzaQxo2TFbfYn_ZLGCNfQOoNWU7kSAYPgtkosxHei-dvSL2Fu11_h3Gdr1v1pDpY1Xo35wORa9o3SlL_Fy5kHPZqBUxJ83KEiXyyd7mEJYPA1XFn5mZaYorMz5sYAMsucw.webp" alt="">
+        플래티넘
+    </label>
 
-        <button id="gold">
-            <img src="https://i.namu.wiki/i/yq5jeR89DkJozjfM_XpUFTLLu54bQanQg8ODB4niIQP5HT9p_9NSrbB5qHbMXbJVHCoO1NuDKfroT6zZ-CYJ36Vb04nk3opalrwPX16nVhdEmCsVIs1jymi1AK2O1m5dKeijZLGLFFsD6RQ_q7LBGw.webp"
-                alt="">
-            골드</button>
+    <input type="checkbox" id="emerald" class="tier-ckb">
+    <label for="emerald" class="tier-btn btn-emerald" data-tier="EMERALD">
+        <img src="https://i.namu.wiki/i/8jpWtJdrlrTkgElWGiwAvUEL2lEpzrWnlwuacwP76g6HdG6R5YchhwFcIr-QsYQSU1_qdxWq1EWSeHTePGX7N6UKUVBYS5eQh6kJO1WIHirhR89WZc-SLQMscO0LaK-BWurduJSBKku00QDPIvu1xA.webp" alt="">
+        에메랄드
+    </label>
 
-        <button id="platinum">
-            <img src="https://i.namu.wiki/i/ZWNBRH1i2hVvy1r9FUCkVzaQxo2TFbfYn_ZLGCNfQOoNWU7kSAYPgtkosxHei-dvSL2Fu11_h3Gdr1v1pDpY1Xo35wORa9o3SlL_Fy5kHPZqBUxJ83KEiXyyd7mEJYPA1XFn5mZaYorMz5sYAMsucw.webp"
-                alt="">
-            플래티넘</button>
+    <input type="checkbox" id="diamond" class="tier-ckb">
+    <label for="diamond" class="tier-btn btn-diamond" data-tier="DIAMOND">
+        <img src="https://i.namu.wiki/i/gOTzT8fXK5RHyBgyxGtSZsim5b5DDK_5OD1zeRWnve0pbV-4syrCJ8RG5zoaYhQMWRfgmxMBaXO37jQ6VjnY6ETISAnzErE35SVjjXI6zqZaX_pEUGpuxwmzUC4XaWf7kohF7DC98qdcGWqSuVQ4dA.webp" alt="">
+        다이아몬드
+    </label>
 
-        <button id="emerald">
-            <img src="https://i.namu.wiki/i/8jpWtJdrlrTkgElWGiwAvUEL2lEpzrWnlwuacwP76g6HdG6R5YchhwFcIr-QsYQSU1_qdxWq1EWSeHTePGX7N6UKUVBYS5eQh6kJO1WIHirhR89WZc-SLQMscO0LaK-BWurduJSBKku00QDPIvu1xA.webp"
-                alt="">
-            에메랄드</button>
+    <input type="checkbox" id="master" class="tier-ckb">
+    <label for="master" class="tier-btn btn-master" data-tier="MASTER">
+        <img src="https://i.namu.wiki/i/a1j4wahXrU7vvqe7DWVji57AIMQH0jjqJ6gTDVrOvB9C85WTTN6llAKbBEIGygWeKcs-Ph4Ef8BhntIurHFQdZA7TIbY9GivjLSB7v2hbLnH1nuZy9Gz9I7JKZX5K7scuNfRXVAAVQhYb3bZP2FOcA.webp" alt="">
+        마스터
+    </label>
 
-        <button id="diamond">
-            <img src="https://i.namu.wiki/i/gOTzT8fXK5RHyBgyxGtSZsim5b5DDK_5OD1zeRWnve0pbV-4syrCJ8RG5zoaYhQMWRfgmxMBaXO37jQ6VjnY6ETISAnzErE35SVjjXI6zqZaX_pEUGpuxwmzUC4XaWf7kohF7DC98qdcGWqSuVQ4dA.webp"
-                alt="">
-            다이아몬드</button>
+    <input type="checkbox" id="grandmaster" class="tier-ckb">
+    <label for="grandmaster" class="tier-btn btn-grandmaster" data-tier="GRANDMASTER">
+        <img src="https://i.namu.wiki/i/bh6Eg8gcIK64T-XF1noLdO2fJxvAya9XtlOiScN0aTp2L4AeEL5jfWAmt8nTLc7rU9mYUjImWE60adHdAl6vmfHhTv7QRIP1W66Slwr41dc2HJgFu4ocl7ZkbXXC3zbLQCd3tdRLE1qq6a5j2Jk16w.webp" alt="">
+        그랜드마스터
+    </label>
 
-        <button id="master">
-            <img src="https://i.namu.wiki/i/a1j4wahXrU7vvqe7DWVji57AIMQH0jjqJ6gTDVrOvB9C85WTTN6llAKbBEIGygWeKcs-Ph4Ef8BhntIurHFQdZA7TIbY9GivjLSB7v2hbLnH1nuZy9Gz9I7JKZX5K7scuNfRXVAAVQhYb3bZP2FOcA.webp"
-                alt="">
-            마스터</button>
-
-        <button id="grandmaster">
-            <img src="https://i.namu.wiki/i/bh6Eg8gcIK64T-XF1noLdO2fJxvAya9XtlOiScN0aTp2L4AeEL5jfWAmt8nTLc7rU9mYUjImWE60adHdAl6vmfHhTv7QRIP1W66Slwr41dc2HJgFu4ocl7ZkbXXC3zbLQCd3tdRLE1qq6a5j2Jk16w.webp"
-                alt="">
-            그랜드마스터</button>
-
-        <button id="challenger">
-            <img src="https://i.namu.wiki/i/Xx3hzdi-B_szrzMlQ-lOK05FwIxs0j7OARWeuby8063dvISn8PlXOe7JBqx_mBH_y_XjPDLNmt1gvABV2tP-WwYyIsLUZzzSNTJb_3XI_9R1wV6T1mAFMapIfEzYwdP3AaMgTo7xNgbhBZkP-mSwXQ.webp"
-                alt="">
-            챌린저</button>
-
-    </div>
+    <input type="checkbox" id="challenger" class="tier-ckb">
+    <label for="challenger" class="tier-btn btn-challenger" data-tier="CHALLENGER">
+        <img src="https://i.namu.wiki/i/Xx3hzdi-B_szrzMlQ-lOK05FwIxs0j7OARWeuby8063dvISn8PlXOe7JBqx_mBH_y_XjPDLNmt1gvABV2tP-WwYyIsLUZzzSNTJb_3XI_9R1wV6T1mAFMapIfEzYwdP3AaMgTo7xNgbhBZkP-mSwXQ.webp" alt="">
+        챌린저
+    </label>
+</div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@latest/dist/chart.umd.min.js"></script>
     <script src="js/main.js"></script>
 </body>

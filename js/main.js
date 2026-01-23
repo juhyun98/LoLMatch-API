@@ -1,5 +1,5 @@
 // ✅ Riot API Key (노출되면 재발급 권장)
-const RIOT_API_KEY = "RGAPI-f9cd67e9-3f9d-4cc6-aa4d-a045b2838adf";
+const RIOT_API_KEY = "RGAPI-57a12821-c177-4f3a-b642-8dcaf16696cd";
 
 // ✅ ASIA 고정
 const REGION = "asia";
@@ -10,7 +10,7 @@ const TIER_BASELINES = {
     BRONZE: { cs10: 61.30, takedowns: 3.72, DPMGPM: 1.81, vpm: 0.74, pings: 22.06 },
     SILVER: { cs10: 65.59, takedowns: 3.99, DPMGPM: 1.83, vpm: 0.82, pings: 24.51 },
     GOLD: { cs10: 66.13, takedowns: 3.91, DPMGPM: 1.88, vpm: 0.79, pings: 24.73 },
-    PLATIINUM: { cs10: 68.23, takedowns: 4.40, DPMGPM: 1.94, vpm: 0.85, pings: 27.02 },
+    PLATINUM: { cs10: 68.23, takedowns: 4.40, DPMGPM: 1.94, vpm: 0.85, pings: 27.02 },
     EMERALD: { cs10: 70.53, takedowns: 4.77, DPMGPM: 2.01, vpm: 0.89, pings: 33.11 },
     DIAMOND: { cs10: 73.37, takedowns: 5.01, DPMGPM: 1.84, vpm: 0.86, pings: 31.55 },
     MASTER: { cs10: 75.84, takedowns: 5.31, DPMGPM: 1.73, vpm: 0.96, pings: 36.44 },
@@ -23,7 +23,7 @@ const TIER_COLORS = {
     BRONZE: "#A06B51",
     SILVER: "#B1C1C0",
     GOLD: "#EABB4F",
-    PLATIINUM: "#42c2a2",
+    PLATINUM: "#42c2a2",
     EMERALD: "#46cd83",
     DIAMOND: "#4fa5dc",
     MASTER: "#b73bc2",
@@ -226,7 +226,7 @@ function renderMatchCard(matchJson, puuid, matchId) {
 function loadPayloadOrRedirect() {
     const raw = sessionStorage.getItem(STORAGE_KEY);
     if (!raw) {
-        window.location.assign("./index.html");
+        window.location.assign("./search.html");
         return null;
     }
     return JSON.parse(raw);
@@ -667,7 +667,7 @@ const TIER_NAME_KO = {
     BRONZE: "브론즈",
     SILVER: "실버",
     GOLD: "골드",
-    PLATIINUM: "플래티넘", // 네 코드 키가 PLATIINUM 이라 그대로 맞춤
+    PLATINUM: "플래티넘", // 네 코드 키가 PLATIINUM 이라 그대로 맞춤
     EMERALD: "에메랄드",
     DIAMOND: "다이아몬드",
     MASTER: "마스터",
@@ -688,6 +688,7 @@ function setPlaceholder(phName, text) {
 
 function showEl(id, on) {
     const el = document.getElementById(id);
+    
     if (!el) return;
     el.style.display = on ? "" : "none";
 }
@@ -832,117 +833,139 @@ function setChartValue(chart, value) {
 // - 티어 선택: 기본 설명 + (잘한점/아쉬운점 등) "분석" 영역까지 표시
 
 function splitTierCommentBox(commentBox) {
-  if (!commentBox) return;
-  if (commentBox.dataset.splitDone === "1") return;
+    if (!commentBox) return;
+    if (commentBox.dataset.splitDone === "1") return;
 
-  // 기존 노드 백업
-  const nodes = Array.from(commentBox.childNodes);
+    // 기존 노드 백업
+    const nodes = Array.from(commentBox.childNodes);
 
-  // 비어있으면 패스
-  if (!nodes.length) {
+    // 비어있으면 패스
+    if (!nodes.length) {
+        commentBox.dataset.splitDone = "1";
+        return;
+    }
+
+    // Split 기준(처음 등장하는 "잘한점/아쉬운" 지점부터 분석 영역으로)
+    const markerIdx = nodes.findIndex((n) => {
+        const t = (n.textContent || "").replace(/\s+/g, "");
+        return (
+            t.includes("잘한점") ||
+            t.includes("아쉬운점") ||
+            t.includes("아쉬운") ||
+            t.includes("개선할점")
+        );
+    });
+
+    const splitAt = markerIdx === -1 ? nodes.length : markerIdx;
+
+    const basic = document.createElement("div");
+    basic.className = "commentBasic";
+
+    const analysis = document.createElement("div");
+    analysis.className = "commentAnalysis";
+
+    // commentBox 비우고 다시 담기
+    while (commentBox.firstChild) commentBox.removeChild(commentBox.firstChild);
+
+    nodes.forEach((n, idx) => {
+        (idx < splitAt ? basic : analysis).appendChild(n);
+    });
+
+    commentBox.appendChild(basic);
+
+    // 분석 파트가 비어있지 않으면 붙임
+    if (analysis.childNodes.length) {
+        commentBox.appendChild(analysis);
+        analysis.style.display = "none"; // 기본은 숨김 (티어 선택 시만 표시)
+    }
+
     commentBox.dataset.splitDone = "1";
-    return;
-  }
-
-  // Split 기준(처음 등장하는 "잘한점/아쉬운" 지점부터 분석 영역으로)
-  const markerIdx = nodes.findIndex((n) => {
-    const t = (n.textContent || "").replace(/\s+/g, "");
-    return (
-      t.includes("잘한점") ||
-      t.includes("아쉬운점") ||
-      t.includes("아쉬운") ||
-      t.includes("개선할점")
-    );
-  });
-
-  const splitAt = markerIdx === -1 ? nodes.length : markerIdx;
-
-  const basic = document.createElement("div");
-  basic.className = "commentBasic";
-
-  const analysis = document.createElement("div");
-  analysis.className = "commentAnalysis";
-
-  // commentBox 비우고 다시 담기
-  while (commentBox.firstChild) commentBox.removeChild(commentBox.firstChild);
-
-  nodes.forEach((n, idx) => {
-    (idx < splitAt ? basic : analysis).appendChild(n);
-  });
-
-  commentBox.appendChild(basic);
-
-  // 분석 파트가 비어있지 않으면 붙임
-  if (analysis.childNodes.length) {
-    commentBox.appendChild(analysis);
-    analysis.style.display = "none"; // 기본은 숨김 (티어 선택 시만 표시)
-  }
-
-  commentBox.dataset.splitDone = "1";
 }
 
 // ✅ 티어 선택 여부에 따라 "분석 영역"만 토글
 function setTierCommentVisible(hasBaseline) {
-  document.querySelectorAll(".tierComment").forEach((box) => {
-    // 코멘트 박스 자체는 항상 보이게(기본 설명은 유지)
-    box.style.display = "block";
+    document.querySelectorAll(".tierComment").forEach((box) => {
+        // 코멘트 박스 자체는 항상 보이게(기본 설명은 유지)
+        box.style.display = "block";
 
-    // split이 안 되어있으면 먼저 분리
-    splitTierCommentBox(box);
+        // split이 안 되어있으면 먼저 분리
+        splitTierCommentBox(box);
 
-    const basic = box.querySelector(".commentBasic");
-    const analysis = box.querySelector(".commentAnalysis");
+        const basic = box.querySelector(".commentBasic");
+        const analysis = box.querySelector(".commentAnalysis");
 
-    if (basic) basic.style.display = "block";
-    if (analysis) analysis.style.display = hasBaseline ? "block" : "none";
-  });
+        if (basic) basic.style.display = "block";
+        if (analysis) analysis.style.display = hasBaseline ? "block" : "none";
+    });
 }
 
 // ✅ 기존 HTML 구조(차트 사이에 섞여있는 설명 텍스트)를 각 chartItem 내부로 이동
 function normalizeChartComments() {
-  const grid = document.querySelector("#chartSection .chartsGrid");
-  if (!grid) return;
+    const grid = document.querySelector("#chartSection .chartsGrid");
+    if (!grid) return;
 
-  // 이미 정리된 경우라도 split은 보장
-  const existing = grid.querySelectorAll(".chartItem .tierComment");
-  if (existing.length) {
-    existing.forEach(splitTierCommentBox);
-    return;
-  }
-
-  const children = Array.from(grid.childNodes);
-
-  for (let i = 0; i < children.length; i++) {
-    const node = children[i];
-    if (!(node instanceof HTMLElement)) continue;
-    if (!node.classList.contains("chartItem")) continue;
-
-    const chartItem = node;
-
-    // chartItem 다음에 나오는 "텍스트/BR 등"을 이 chartItem의 코멘트로 모음
-    let j = i + 1;
-
-    const commentBox = document.createElement("div");
-    commentBox.className = "tierComment";
-    commentBox.style.display = "block"; // ✅ 박스는 항상 보이게 (기본설명 유지)
-
-    // 다음 chartItem이 나오기 전까지의 노드를 commentBox에 넣기
-    while (j < children.length) {
-      const next = children[j];
-      if (next instanceof HTMLElement && next.classList.contains("chartItem")) break;
-
-      // 텍스트/BR/기타 노드 모두 이동
-      commentBox.appendChild(next);
-      j++;
+    // 이미 정리된 경우라도 split은 보장
+    const existing = grid.querySelectorAll(".chartItem .tierComment");
+    if (existing.length) {
+        existing.forEach(splitTierCommentBox);
+        return;
     }
 
-    chartItem.appendChild(commentBox);
-    splitTierCommentBox(commentBox);
+    const children = Array.from(grid.childNodes);
 
-    // i를 다음 chartItem 직전으로 점프
-    i = j - 1;
-  }
+    for (let i = 0; i < children.length; i++) {
+        const node = children[i];
+        if (!(node instanceof HTMLElement)) continue;
+        if (!node.classList.contains("chartItem")) continue;
+
+        const chartItem = node;
+
+        // chartItem 다음에 나오는 "텍스트/BR 등"을 이 chartItem의 코멘트로 모음
+        let j = i + 1;
+
+        const commentBox = document.createElement("div");
+        commentBox.className = "tierComment";
+        commentBox.style.display = "block"; // ✅ 박스는 항상 보이게 (기본설명 유지)
+
+        // 다음 chartItem이 나오기 전까지의 노드를 commentBox에 넣기
+        while (j < children.length) {
+            const next = children[j];
+            if (next instanceof HTMLElement && next.classList.contains("chartItem")) break;
+
+            // 텍스트/BR/기타 노드 모두 이동
+            commentBox.appendChild(next);
+            j++;
+        }
+
+        chartItem.appendChild(commentBox);
+        splitTierCommentBox(commentBox);
+
+        // i를 다음 chartItem 직전으로 점프
+        i = j - 1;
+    }
 }
+
+
+document.querySelectorAll('.tier-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const tier = btn.dataset.tier; // 예: EMERALD
+        const tierText = btn.textContent.trim(); // 예: 에메랄드
+
+        // 1. 모든 [data-ph="tier_name"] 요소를 찾습니다.
+        const tierNameSpans = document.querySelectorAll('[data-ph="tier_name"]');
+
+        tierNameSpans.forEach(span => {
+            // 기존 티어 색상 클래스 모두 제거
+            span.className = '';
+
+            // 새 티어 색상 클래스 적용 (예: tier-color-EMERALD)
+            span.classList.add(`tier-color-${tier}`);
+
+            // 글자 변경
+            span.textContent = tierText;
+        });
+    });
+});
 
 
 
@@ -1066,20 +1089,37 @@ async function init() {
 }
 
 function toggleBaseline(tierName) {
-    // 같은 티어 다시 누르면 해제, 다른 티어면 교체(=항상 하나만)
-    selectedBaselineName = (selectedBaselineName === tierName) ? null : tierName;
+    const currentCheckbox = document.getElementById(tierName.toLowerCase());
+
+    // 1. 하나만 선택되도록 다른 체크박스 해제
+    if (currentCheckbox && currentCheckbox.checked) {
+        document.querySelectorAll('.tier-ckb').forEach(ckb => {
+            if (ckb !== currentCheckbox) ckb.checked = false;
+        });
+    }
+
+    // 2. 경기 선택 여부 확인
+    if (!lastSelectedMatchJson || !lastSelectedStats) {
+        alert("먼저 전적(경기)을 하나 클릭해서 차트를 생성해 주세요.");
+        if (currentCheckbox) currentCheckbox.checked = false;
+        return;
+    }
+
+    // 3. 변수 업데이트 (토글)
+    if (selectedBaselineName === tierName) {
+        selectedBaselineName = null;
+    } else {
+        selectedBaselineName = tierName;
+    }
+
+    // 4. 원래 있던 마무리 로직 (중요!)
     setTierCommentVisible(!!selectedBaselineName);
 
-    // 이미 선택된 경기(차트 생성된 상태)면 즉시 반영
-    if (lastSelectedMatchJson && lastSelectedStats) {
-        if (!chartsInitialized) {
-            initMetricCharts();
-            chartsInitialized = true;
-        }
-        updateMetricCharts(lastSelectedMatchJson, lastSelectedStats);
-    } else {
-        alert("먼저 전적(경기)을 하나 클릭해서 차트를 생성해 주세요.");
+    if (!chartsInitialized) {
+        initMetricCharts();
+        chartsInitialized = true;
     }
+    updateMetricCharts(lastSelectedMatchJson, lastSelectedStats);
 }
 
 
@@ -1087,7 +1127,7 @@ document.getElementById("iron")?.addEventListener("click", () => toggleBaseline(
 document.getElementById("bronze")?.addEventListener("click", () => toggleBaseline("BRONZE"));
 document.getElementById("silver")?.addEventListener("click", () => toggleBaseline("SILVER"));
 document.getElementById("gold")?.addEventListener("click", () => toggleBaseline("GOLD"));
-document.getElementById("platinum")?.addEventListener("click", () => toggleBaseline("PLATIINUM"));
+document.getElementById("platinum")?.addEventListener("click", () => toggleBaseline("PLATINUM"));
 document.getElementById("emerald")?.addEventListener("click", () => toggleBaseline("EMERALD"));
 document.getElementById("diamond")?.addEventListener("click", () => toggleBaseline("DIAMOND"));
 document.getElementById("master")?.addEventListener("click", () => toggleBaseline("MASTER"));
@@ -1098,7 +1138,7 @@ document.getElementById("challenger")?.addEventListener("click", () => toggleBas
 
 $("back")?.addEventListener("click", () => {
     sessionStorage.removeItem(STORAGE_KEY);
-    window.location.assign("./index.html");
+    window.location.assign("./search.html");
 });
 
 setTierCommentVisible(false);
