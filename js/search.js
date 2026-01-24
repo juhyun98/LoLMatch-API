@@ -1,5 +1,5 @@
 // ✅ 여기에 Riot API Key 넣기 (개발용 / 배포 금지)
-const RIOT_API_KEY = "RGAPI-57a12821-c177-4f3a-b642-8dcaf16696cd";
+const RIOT_API_KEY = "RGAPI-fc260a63-30ef-486f-ae58-bf4b2ae25674";
 
 // ✅ ASIA 고정
 const REGION = "asia";
@@ -34,7 +34,12 @@ async function riotFetchJson(url) {
 
   const text = await res.text();
   let data;
-  try { data = text ? JSON.parse(text) : null; } catch { data = { raw: text }; }
+  try { 
+    data = text ? JSON.parse(text) : null; 
+    } 
+  catch { 
+    data = { raw: text }; 
+    }
 
   if (!res.ok) {
     const retryAfter = res.headers.get("Retry-After");
@@ -54,13 +59,6 @@ async function getAccountByRiotId(gameName, tagLine) {
 
 /* 라이엇 전적 매치 데이터를 가져오는 기능 (puuid를 통해 최근 10경기를 가져옴) */
 /* 먼저 라이엇 계정 조회가 일어나야 puuid값을 알 수 있다. (계정 조회가 선행되어야함) */
-async function getMatchIdsByPuuid(puuid, start = 0, count = 10) {
-  const url =
-    `${baseUrl()}/lol/match/v5/matches/by-puuid/` +
-    `${encodeURIComponent(puuid)}/ids?start=${start}&count=${count}`;
-  return riotFetchJson(url);
-}
-
 
 const RANKED_SOLO_QUEUE = 420; // 솔랭만
 
