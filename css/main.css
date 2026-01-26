@@ -4,7 +4,178 @@ body {
     background: linear-gradient(180deg, #0e192e 0%, #0a1c3f 100%);
     ;
     color: white;
+    background-color: #06090d;
+    margin: 0;
+    overflow-x: hidden;
+    position: relative;
+    min-height: 100vh;
 
+}
+
+/* 광원 공통 설정 */
+body::before {
+    content: "";
+    position: fixed;
+    width: 1300px; 
+    height: 1300px;
+    border-radius: 50%;
+    z-index: -1;
+    filter: blur(140px);
+    opacity: 0.1; 
+    pointer-events: none; /* 클릭 방해 금지 */
+
+    /* [광원 위치] 왼쪽 상단 고정 */
+    top: -100px;
+    left: 250px;
+
+    /* [색상] 민트색 광원 */
+    background: radial-gradient(circle, #00F2FF 0%, transparent 70%);
+
+    /* [애니메이션] 8초 동안 부드럽게 크기 변화 */
+    animation: pulse 4s infinite alternate ease-in-out;
+}
+
+/*  제자리에서 크기와 투명도만 변하는 애니메이션 */
+@keyframes pulse {
+    0% {
+        transform: scale(1);   /* 원래 크기 */
+        opacity: 0.2;          /* 살짝 흐리게 */
+    }
+    100% {
+        transform: scale(1.3); /* 1.4배까지 커짐 */
+        opacity: 0.35;          /* 조금 더 진하게 */
+    }
+}
+
+/* 요약 영역 컨테이너 */
+
+/* 요약 카드 전체 컨테이너 */
+#summary {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+    background: rgba(26, 31, 40, 0.6); /* 배경 광원이 비치도록 살짝 투명하게 */
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 242, 255, 0.15);
+    border-radius: 12px;
+    color: #fff;
+}
+
+/* 상단: 승률 정보 영역 */
+.summary-top {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.winrate-circle {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: conic-gradient(#00F2FF var(--wr), #333 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+    box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
+}
+
+.winrate-circle::after {
+    content: "";
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    background: #1a1f28;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.winrate-circle span {
+    position: relative;
+    z-index: 2;
+    color: #00F2FF;
+}
+
+/* 하단: 스탯 그리드 */
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 10px;
+}
+
+.stat-box {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    border-bottom: 2px solid transparent;
+    transition: 0.3s;
+}
+
+.stat-box:hover {
+    background: rgba(0, 242, 255, 0.1);
+    border-bottom: 2px solid #00F2FF;
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 5px;
+}
+
+.stat-value {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #eee;
+}
+
+.stat-value.kda-high { color: #00F2FF; text-shadow: 0 0 10px rgba(0, 242, 255, 0.5); }
+.extraGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2열 배치 */
+    gap: 12px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.2); /* 배경을 살짝 더 어둡게 */
+    border-radius: 8px;
+    border: 1px solid rgba(0, 242, 255, 0.1); /* 은은한 민트색 테두리 */
+}
+
+/* 개별 항목(KV) 스타일 */
+.extraGrid .kv {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+/* 항목 호버 시 효과 */
+.extraGrid .kv:hover {
+    background: rgba(0, 242, 255, 0.05);
+    transform: translateX(5px); /* 살짝 오른쪽으로 밀림 */
+}
+
+/* 라벨(제목) 스타일 */
+.extraGrid .kv b {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* 수치(값) 스타일 */
+.extraGrid .kv span {
+    color: #00F2FF; /* 민트색 포인트 */
+    font-family: 'Mono', monospace; /* 숫자는 고정폭 글꼴 추천 */
+    font-weight: bold;
+    font-size: 1rem;
+    text-shadow: 0 0 3px rgba(0, 242, 255, 0.5); /* 네온 효과 */
 }
 
 .title {
@@ -133,11 +304,11 @@ button {
 }
 
 .match.win:hover {
-    background-color: #93b7f1;
+    background-color: #375991;
 }
 
 .match.lose:hover {
-    background-color: #e75a6d;
+    background-color: #8b3440;
 }
 
 .extra {
@@ -676,96 +847,134 @@ canvas:focus {
     width: 200px;
 }
 
-/* 체크박스 숨김 */
-.tier-ckb {
-    display: none;
+.tier-btn img {
+    width: 52px;
+    height: 52px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6));
+    transition: transform 0.3s ease;
 }
 
-/* 버튼 기본 스타일 (원래 색상 기반) */
+.tier-btn:hover img {
+    transform: scale(1.08);
+}
+
+
 .tier-btn {
     display: flex;
     align-items: center;
     gap: 12px;
     padding: 12px 18px;
-    border-radius: 12px;
+    border-radius: 14px;
     color: white;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-    user-select: none;         /* 표준 속성 /
-
-    / 클릭 시 생기는 파란색 테두리(아웃라인) 제거 */
+    user-select: none;
     outline: none;
+    position: relative;
+    overflow: hidden;
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+
+    transition: all 0.25s ease;
+
+    
+   /* 입체감 */
+    box-shadow: 
+        inset 0 1px 0 rgba(255,255,255,0.15),
+        inset 0 -4px 8px rgba(0,0,0,0.35),
+        0 6px 18px rgba(0,0,0,0.45);
+
+    backdrop-filter: blur(6px);
 }
 
-.tier-btn img {
-    width: 50px;
-    height: 50px;
-    object-fit: contain;
+
+
+/* 부드러운 빛 반사 효과 */
+.tier-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        120deg,
+        rgba(255,255,255,0.25) 0%,
+        rgba(255,255,255,0.08) 40%,
+        rgba(255,255,255,0.02) 60%,
+        rgba(0,0,0,0.15) 100%
+    );
+    pointer-events: none;
 }
 
-/* 각 티어별 고유 배경색 (이미지 기준) */
-.btn-iron {
-    background-color: #574e4e;
+
+.tier-btn:hover::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -30%;
+    width: 60%;
+    height: 200%;
+    background: linear-gradient(
+        120deg,
+        rgba(255,255,255,0.0) 0%,
+        rgba(255,255,255,0.35) 50%,
+        rgba(255,255,255,0.0) 100%
+    );
+    transform: rotate(25deg);
+    animation: shine 0.8s ease forwards;
 }
 
-.btn-bronze {
-    background-color: #8c513a;
+@keyframes shine {
+    to {
+        left: 120%;
+    }
 }
 
-.btn-silver {
-    background-color: #80989d;
+
+/* 체크박스 숨김 */
+.tier-ckb {
+    display: none;
 }
 
-.btn-gold {
-    background-color: #cd8837;
+/* ✅ 선택된 버튼 효과 (과하지 않게 고급 느낌) */
+.tier-ckb:checked + .tier-btn {
+    box-shadow: 0 0 0 1.8px rgba(255,255,255,0.75);
+    animation: softNeon 2.8s ease-in-out infinite;
 }
 
-.btn-platinum {
-    background-color: #2da380;
+@keyframes softNeon {
+    0% {
+        box-shadow:
+            0 0 0 1.8px rgba(255,255,255,0.65),
+            0 0 6px rgba(120,180,255,0.25);
+    }
+    50% {
+        box-shadow:
+            0 0 0 1.8px rgba(255,255,255,0.9),
+            0 0 14px rgba(120,180,255,0.45);
+    }
+    100% {
+        box-shadow:
+            0 0 0 1.8px rgba(255,255,255,0.65),
+            0 0 6px rgba(120,180,255,0.25);
+    }
 }
 
-.btn-emerald {
-    background-color: #20b052;
-}
 
-.btn-diamond {
-    background-color: #576bcc;
-}
 
-.btn-master {
-    background-color: #9d329d;
-}
+/* 🎮 각 티어 배경색 유지 */
+.btn-iron      { background: linear-gradient(135deg, #6b6464, #3e3838); }
+.btn-bronze    { background: linear-gradient(135deg, #a97155, #5a3325); }
+.btn-silver    { background: linear-gradient(135deg, #bfc9cc, #6f8a91); }
+.btn-gold      { background: linear-gradient(135deg, #f2b35d, #b97720); }
+.btn-platinum  { background: linear-gradient(135deg, #47c6a3, #1c7a67); }
+.btn-emerald   { background: linear-gradient(135deg, #39d98a, #138a4f); }
+.btn-diamond   { background: linear-gradient(135deg, #7da2ff, #3c4fb3); }
+.btn-master    { background: linear-gradient(135deg, #d96ad9, #6e1f7e); }
+.btn-grandmaster { background: linear-gradient(135deg, #ff6a4d, #8c1f12); }
+.btn-challenger { background: linear-gradient(135deg, #6ee7ff, #2a6fbf); }
 
-.btn-grandmaster {
-    background-color: #cd452d;
-}
 
-.btn-challenger {
-    background-color: #4ec3dc;
-}
-
-/* ⭐ 마우스 올렸을 때 살짝 밝아짐 */
-.tier-btn:hover {
-    filter: brightness(1.1);
-}
-
-/* ⭐ 클릭(토글) 되었을 때 강조 효과 */
-.tier-ckb:checked+.tier-btn {
-    transform: scale(1.08) translateX(10px);
-    /* 살짝 커지면서 오른쪽으로 이동 */
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.2)), var(--bg-color);
-    /* 기존 색상에 광택 추가 */
-    border: 2px solid white;
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-}
-
-/* 체크된 상태의 그라데이션 (선택 사항: 보라색 계열로 강조하고 싶을 때) */
-.tier-ckb:checked+.tier-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-}
 
 .tierGuide {
     font-size: 15px;
@@ -786,8 +995,8 @@ canvas:focus {
 
     /* 네온 느낌 */
     text-shadow:
-        0 0 6px rgba(169, 245, 28, 0.45),
-        0 0 14px rgba(70, 205, 131, 0.25);
+        0 0 3px rgba(169, 245, 28, 0.45),
+        0 0 10px rgba(70, 205, 131, 0.25);
 }
 
 /* 왼쪽 포인트 바 */
@@ -814,5 +1023,54 @@ canvas:focus {
 .backSearchpage {
     text-decoration-line: none;
     color: #00F2FF;
+}
+
+
+/* 문장 포인트 효과 (그라데이션 밑줄) */
+.textPIT {
+  font-weight: 700;
+  background: linear-gradient(90deg, #4dabf7, #9775fa);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+
+/* 훌륭해요, 아쉬워요  */
+.textD{
+    font-size: medium;
+}
+
+.textD{
+    font-size: medium;
+}
+
+/* 체크박스 숨김 */
+body:has(.tier-ckb:checked) .textT {
+  display: none;
+}
+
+
+/* 기본 숨김 유지 */
+#cs10_good, #cs10_bad,
+#takedowns_good, #takedowns_bad,
+#dpm_good, #dpm_bad,
+#vpm_good, #vpm_bad,
+#pings_good, #pings_bad {
+  display: none;
+}
+
+/* 티어 체크박스가 하나라도 체크되면 전부 표시 */
+body:has(.tier-ckb:checked) #cs10_good,
+body:has(.tier-ckb:checked) #cs10_bad,
+body:has(.tier-ckb:checked) #takedowns_good,
+body:has(.tier-ckb:checked) #takedowns_bad,
+body:has(.tier-ckb:checked) #dpm_good,
+body:has(.tier-ckb:checked) #dpm_bad,
+body:has(.tier-ckb:checked) #vpm_good,
+body:has(.tier-ckb:checked) #vpm_bad,
+body:has(.tier-ckb:checked) #pings_good,
+body:has(.tier-ckb:checked) #pings_bad {
+  display: block;
 }
 

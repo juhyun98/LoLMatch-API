@@ -1,5 +1,5 @@
 // ✅ 여기에 Riot API Key 넣기 (개발용 / 배포 금지)
-const RIOT_API_KEY = "RGAPI-fc260a63-30ef-486f-ae58-bf4b2ae25674";
+const RIOT_API_KEY = "RGAPI-7236ac71-42af-477f-a988-52d6909d8727";
 
 // ✅ ASIA 고정
 const REGION = "asia";
@@ -34,12 +34,7 @@ async function riotFetchJson(url) {
 
   const text = await res.text();
   let data;
-  try { 
-    data = text ? JSON.parse(text) : null; 
-    } 
-  catch { 
-    data = { raw: text }; 
-    }
+  try { data = text ? JSON.parse(text) : null; } catch { data = { raw: text }; }
 
   if (!res.ok) {
     const retryAfter = res.headers.get("Retry-After");

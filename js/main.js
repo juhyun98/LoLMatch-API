@@ -1,5 +1,5 @@
 // ✅ Riot API Key (노출되면 재발급 권장)
-const RIOT_API_KEY = "RGAPI-fc260a63-30ef-486f-ae58-bf4b2ae25674";
+const RIOT_API_KEY = "RGAPI-7236ac71-42af-477f-a988-52d6909d8727";
 
 // ✅ ASIA 고정
 const REGION = "asia";
@@ -177,9 +177,38 @@ function renderSummary(sum) {
     const el = $("summary");
     if (!el) return;
 
-    el.textContent =
-        `총 ${sum.games}판 | ${sum.wins}승 ${sum.losses}패 | 승률 ${sum.winRate}% | ` +
-        `평균 K/D/A ${sum.avgKills}/${sum.avgDeaths}/${sum.avgAssists} | 평균 KDA ${sum.avgKDA}`;
+    // 승률 도넛 차트 각도 계산 및 KDA 강조색 결정
+    const winRate = sum.winRate || 0;
+    const kdaColor = sum.avgKDA >= 3 ? "#00F2FF" : "#eee";
+
+    el.innerHTML =
+        `
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 20px; color: #fff;">
+            <div style="width: 60px; height: 60px; border-radius: 50%; background: conic-gradient(#00F2FF ${winRate}%, #333 0); display: flex; align-items: center; justify-content: center;">
+                <div style="width: 48px; height: 48px; background: #1a1f28; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: bold; color: #00F2FF;">
+                    ${winRate}%
+                </div>
+            </div>
+
+            <div style="flex: 1; min-width: 150px;">
+                <div style="font-weight: bold; font-size: 1.1rem;">최근 ${sum.games}경기 요약</div>
+                <div style="font-size: 0.9rem; margin-top: 4px;">
+                    <span style="color: #60a5fa;">${sum.wins}승</span> / <span style="color: #f87171;">${sum.losses}패</span>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 15px;">
+                <div style="text-align: center; border-left: 2px solid #333; padding-left: 15px;">
+                    <div style="font-size: 0.75rem; color: #aaa; margin-bottom: 2px;">평균 KDA</div>
+                    <div style="font-weight: bold; color: ${kdaColor};">${sum.avgKDA}</div>
+                </div>
+                <div style="text-align: center; border-left: 2px solid #333; padding-left: 15px;">
+                    <div style="font-size: 0.75rem; color: #aaa; margin-bottom: 2px;">평균 K/D/A</div>
+                    <div style="font-weight: 500;">${sum.avgKills} / <span>${sum.avgDeaths}</span> / ${sum.avgAssists}</div>
+                </div>
+            </div>
+        </div>
+    `;
 }
 
 function renderMatchCard(matchJson, puuid, matchId) {
@@ -226,7 +255,7 @@ function renderMatchCard(matchJson, puuid, matchId) {
 function loadPayloadOrRedirect() {
     const raw = sessionStorage.getItem(STORAGE_KEY);
     if (!raw) {
-        window.location.assign("./index.html");
+        window.location.assign("./search.html");
         return null;
     }
     return JSON.parse(raw);
@@ -1138,7 +1167,7 @@ document.getElementById("challenger")?.addEventListener("click", () => toggleBas
 
 $("back")?.addEventListener("click", () => {
     sessionStorage.removeItem(STORAGE_KEY);
-    window.location.assign("./index.html");
+    window.location.assign("./search.html");
 });
 
 setTierCommentVisible(false);
